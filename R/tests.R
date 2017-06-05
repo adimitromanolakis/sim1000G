@@ -1,5 +1,5 @@
 
-hist(generateRecombinationDistances(130000),n=100)
+#hist(generateRecombinationDistances(130000),n=100)
 
 if(0) {
     recombVector = generateSingleRecombinationVector(cm)

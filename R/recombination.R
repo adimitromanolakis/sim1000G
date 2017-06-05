@@ -133,3 +133,89 @@ plotRegionalGeneticMap = function(bp) {
     
     
 }
+
+
+
+
+
+
+
+#' @export
+crossoverCDFvector = NA
+
+
+#' @export
+fgammamod = function(x,L, n) {
+    
+    (x**(n-1))*exp(-L*x)    *  (L**n)/gamma(n) 
+}
+
+
+#' @export
+fstar = function(x,q,l) {
+    
+    
+    sum1 = 0
+    for(k in 1:5) 
+        sum1 = sum1 + fgammamod(x, 2*q*(l+1) , k*(l+1))/ (2**k)
+    
+    sum1
+    
+}
+
+
+
+
+
+#plot(function(x) fstar(x,1,4.5),xlim=c(0,3), xlab="Morgans", ylab="Density")
+#title("Crossover distance")
+#abline(h=1,col="gray")
+
+#' @export
+crossoverCDF = new.env()
+
+#' @export
+makeCDF = function() {
+    
+    dens = sapply(seq(0,4,by=0.001), function(x) fstar(x,1,1) )  # originally was 3.2
+    
+    
+    cdf = cumsum(dens)
+    cdf = cdf/max(cdf)
+    
+    cdf[1:10]
+    crossoverCDF$vector = cdf
+    crossoverCDFvector
+}
+
+
+
+
+
+
+
+
+#' @export
+generateRecombinationDistances = function ( n ) {
+    
+    
+    t = findInterval( runif(n), crossoverCDF$vector )
+    t = t * 4 / length(crossoverCDF$vector)
+    100 * t
+}
+
+
+#hist(generateRecombinationDistances(20000),n=100)
+
+
+
+
+
+
+
+
+
+
+
+
+
