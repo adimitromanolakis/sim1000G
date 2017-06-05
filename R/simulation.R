@@ -28,6 +28,7 @@ get = function() { pkg.env$x }
 
 
 
+#' @export
 SIM = new.env()
 
 
@@ -249,7 +250,7 @@ newNuclearFamily = function(fid) {
 }
 
 
-newFamilyWithOffspring = function(fid, n = 2) {
+newFamilyWithOffspring = function(fid, noffspring = 2) {
     
     fam = data.frame(fid = fid  , 
                      id = c(1:2) , 
@@ -268,7 +269,7 @@ newFamilyWithOffspring = function(fid, n = 2) {
     
     
     
-    for(i in 1:n) {
+    for(i in 1:noffspring) {
         j3 = SIM$mate(j1,j2)
         newFamLine = c(fid, i+10, 1,2, 1 , j3)
         fam = rbind(fam, newFamLine)

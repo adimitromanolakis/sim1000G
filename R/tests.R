@@ -103,7 +103,8 @@ test1_timingOfMatingFunction = function() {
         print( system.time(x <- sapply(1:50, function(x) mate(1,2))) )
     }
     
-}; test1_timingOfMatingFunction()
+}; 
+#test1_timingOfMatingFunction()
 
 
 test2_pIBS0_problem = function() {
@@ -124,7 +125,8 @@ test2_pIBS0_problem = function() {
     
     cat("IBS0 of full-siblings: " , ibs0, "\n");
     
-}; test2_pIBS0_problem()
+}; 
+#test2_pIBS0_problem()
 
 
 
