@@ -1,4 +1,4 @@
-# rareBF
+# sim1000G
 
 
 R package for 1000 genomes simulations
