@@ -60,14 +60,43 @@ generateSingleRecombinationVector = function(cm) {
 
 
 #' @export
-
 geneticMap <- new.env()
 
 
+
+
+
 #' @export
-readGeneticMap = function(chromosome) {
+downloadGeneticMap = function(chromosome) {
+ 
     
-    filelocation = sprintf( "geneticmap/genetic_map_GRCh37_chr%s.txt.gz", as.character( chromosome) ) 
+    fname = "genetic_map_GRCh37_chr4.txt.gz"
+    url = sprintf("https://github.com/adimitromanolakis/geneticMap-GRCh37/raw/master/genetic_map_GRCh37_chr4.txt.gz")
+    
+    dest_dir = system.file("data", fname, package = "sim1000G")
+    dest_dir
+    
+     cat("Downloading genetic map\n")
+        dest_dir = system.file("data", package = "sim1000G")
+        
+        dest_dir = "./"
+        dest_path = sprintf("%s/genetic_map_GRCh37_chr4.txt.gz", dest_dir)
+        cat(dest_path,"\n")
+        file.exists(dest_path)
+        
+        download.file(url  ,  dest = dest_path)
+        
+
+}
+
+
+
+
+
+#' @export
+readGeneticMap = function(chromosome, dir=".") {
+    
+    filelocation = sprintf( "%s/genetic_map_GRCh37_chr%s.txt.gz", dir, as.character( chromosome) ) 
     
     if(! file.exists(filelocation) ) {
      stop(sprintf("Genetic map file %s not found",filelocation))   
@@ -80,6 +109,9 @@ readGeneticMap = function(chromosome) {
     geneticMap$chr = a$chr
     geneticMap$bp = a$bp
     geneticMap$cm = a$cm
+    
+    
+    cat("      -> Genetic map has" , length(geneticMap$bp), "entries\n");
     
 }
 

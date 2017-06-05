@@ -70,7 +70,12 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) 
         # Generate haplodata object 
         
         dim( t( cbind(SIM$population_gt1, SIM$population_gt2) )  )
+        
+        
         SIM$haplodata = haplodata(  t( cbind(SIM$population_gt1, SIM$population_gt2) ) ) 
+        cat("[#####...] Haplodata object created\n");
+        
+        
         
         # Variant information
         
@@ -89,6 +94,11 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) 
         SIM$gt1 = matrix(nrow = SIM$total_individuals, ncol = SIM$N_markers, -1)
         SIM$gt2 = matrix(nrow = SIM$total_individuals, ncol = SIM$N_markers, -1)
         
+        
+        SIM$origin1 = matrix(nrow = SIM$total_individuals, ncol = SIM$N_markers, -1)
+        SIM$origin2 = matrix(nrow = SIM$total_individuals, ncol = SIM$N_markers, -1)
+        
+        
         #SIM$cm = seq(0, 3200, l=dim(SIM$gt1)[2] )
         SIM$npool = 0
 
@@ -101,13 +111,15 @@ SIM$generateNewHaplotypes = function(n = -1) {
     if(SIM$npool < 2) {
         cat("Generate new individual pool n=200\n");
         
-        SIM$pool = haplosim2(200, SIM$haplodata, summary = F)$data
-        SIM$npool = 200
+        
+        SIM$npool = 500
+        SIM$pool = haplosim2(SIM$npool, SIM$haplodata, summary = F)$data
+        
         
     }
     
     GT = list(gt1 =  SIM$pool[SIM$npool,], gt2 = SIM$pool[SIM$npool-1,] )
-    SIM$npool <<- SIM$npool - 2
+    SIM$npool = SIM$npool - 2
     
     return(GT)
     
@@ -181,6 +193,8 @@ SIM$mate = function(i, j) {
     gt1 =  recomb1 * SIM$gt1[i,]  +  (1-recomb1) * SIM$gt2[i,]
     gt2 =  recomb2 * SIM$gt1[j,]  +  (1-recomb2) * SIM$gt2[j,]
     
+    
+    
     #gt1 = SIM$gt1[i,]
     #gt1[recomb1==1] = SIM$gt2[i,][recomb1==1]
     
@@ -198,11 +212,22 @@ SIM$mate = function(i, j) {
     
     #cat(p1,"\n",p2,"\n",p3,"\n",sep="")
     
-    if(runif(1) < 0.5) { t = gt1; gt1 = gt2; gt2 = t; }
+    SWAP = runif(1) < 0.5
+    if(SWAP) { t = gt1; gt1 = gt2; gt2 = t; }
     
     
     index = SIM$addIndividualFromGenotypes(gt1, gt2)
     
+
+    
+    if(!SWAP) {
+        SIM$origin1[index,] = recomb1 * i + (1-recomb1) * (-i);
+        SIM$origin2[index,] = recomb2 * j + (1-recomb2) * (-j);
+    } else {
+        SIM$origin2[index,] = recomb1 * i + (1-recomb1) * (-i);
+        SIM$origin1[index,] = recomb2 * j + (1-recomb2) * (-j);
+    }
+
     # last_gt <<- gt1 + gt2
     
     return (index)    
@@ -229,6 +254,7 @@ SIM$mate = function(i, j) {
 
 
 
+#' @export
 newNuclearFamily = function(fid) {
     
     fam = data.frame(fid = fid  , 
@@ -250,6 +276,7 @@ newNuclearFamily = function(fid) {
 }
 
 
+#' @export
 newFamilyWithOffspring = function(fid, noffspring = 2) {
     
     fam = data.frame(fid = fid  , 

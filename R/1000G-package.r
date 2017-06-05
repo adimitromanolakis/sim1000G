@@ -10,6 +10,7 @@
 
 #' @import hapsim
 #' @import stringr
+#' @import MASS
 NULL
 
 

@@ -24,7 +24,7 @@ writePED = function(fam) {
         dim(fam)
         dim(vcf)
         
-        map = data.frame(vcf[,1],vcf[,3],0,vcf[,2])
+        map = data.frame( vcf$vcf[,1] , vcf$vcf[,3] , 0 , vcf$vcf[,2])
         write.table(map,file="out.map",sep=" ",row=F,col=F,quote=F)
         system("~/tools/prest-plus/prest --geno out.ped --map out.map --wped --ibs1 0.5")
 
