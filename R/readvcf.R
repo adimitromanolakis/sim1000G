@@ -15,13 +15,22 @@ createVCF = function() {
     
     #4 90645249 90759446 strand -1 id SNCA name SNCA bioType protein_coding
     '
+
+
+
 CHROM=4
 VCF=~/1000genomes/ALL.chr"$CHROM".*.vcf.gz
 REGION=4:90645249-90759446
 REGION=4:60645249-61569446
 
+
+# 4 77356252 77704404 strand 1 id SHROOM3 name SHROOM3 bioType protein_coding
+REGION=4:77356252-77704404
+
+
+
 bcftools view -S CEU.txt --force-samples -r $REGION  $VCF > /tmp/1.vcf
-grep -v "^##" /tmp/1.vcf > haplosims/1.vcf
+grep -v "^##" /tmp/1.vcf > haplosims/2.vcf
 
 
 
@@ -37,7 +46,7 @@ grep -v "^##" /tmp/1.vcf > haplosims/1.vcf
 
 #' @export
 
-readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02) {
+readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA) {
     
 
     
@@ -89,7 +98,8 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
     ok = apply(gt1,1,function(x) max(x,na.rm=T))
     s = which(maf > min_maf & maf2 > min_maf & ok < 2)
     
-    
+    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf & maf2 <= max_maf & ok < 2) ) } 
+
     if(length(s)>maxNumberOfVariants) s = sort( sample(s,maxNumberOfVariants) )
     
     
