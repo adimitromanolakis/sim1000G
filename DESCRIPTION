@@ -1,8 +1,8 @@
 Package: sim1000G
 Type: Package
 Title: Haplotype simulations using data from 1000 genomes
-Version: 1.00
-Date: 2016-11-01
+Version: 1.04
+Date: 2017-06-08
 Author: Laurent Briollais, Apostolos Dimitromanolakis
 Maintainer: Apostolos Dimitromanolakis <apostol@cs.toronto.edu>
 Description: N/A

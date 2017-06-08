@@ -70,7 +70,8 @@ geneticMap <- new.env()
 downloadGeneticMap = function(chromosome) {
  
     
-    fname = "genetic_map_GRCh37_chr4.txt.gz"
+    fname = sprintf("genetic_map_GRCh37_chr%s.txt.gz" , chromosome )
+    
     url = sprintf("https://github.com/adimitromanolakis/geneticMap-GRCh37/raw/master/genetic_map_GRCh37_chr4.txt.gz")
     
     dest_dir = system.file("data", fname, package = "sim1000G")
@@ -113,6 +114,8 @@ readGeneticMap = function(chromosome, dir=".") {
     
     cat("      -> Genetic map has" , length(geneticMap$bp), "entries\n");
     
+    makeCDF();
+    0;
 }
 
 
@@ -186,6 +189,7 @@ makeCDF = function() {
     cdf[1:10]
     crossoverCDF$vector = cdf
     crossoverCDFvector
+    
 }
 
 

@@ -18,11 +18,11 @@ testfun = function(variants_per_individual, non_missing_sites, pheno, method, ve
 
 pkg.env <- new.env()
 
-#' @export
-set = function(x) { pkg.env$x = x }
+###' @xexport
+###set = function(x) { pkg.env$x = x }
 
-#' @export
-get = function() { pkg.env$x }
+####' @xexport
+###get = function() { pkg.env$x }
 
 
 
@@ -101,6 +101,8 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) 
         
         #SIM$cm = seq(0, 3200, l=dim(SIM$gt1)[2] )
         SIM$npool = 0
+        SIM$last_ancestral_index = 10
+        
 
 }
 
@@ -120,6 +122,8 @@ SIM$generateNewHaplotypes = function(n = -1) {
     
     GT = list(gt1 =  SIM$pool[SIM$npool,], gt2 = SIM$pool[SIM$npool-1,] )
     SIM$npool = SIM$npool - 2
+    
+    SIM$last_ancestral_index = SIM$last_ancestral_index  + 1
     
     return(GT)
     
@@ -146,6 +150,10 @@ SIM$addUnrelatedIndividual = function() {
     SIM$gt1[j,] = newGenotypes$gt1
     SIM$gt2[j,] = newGenotypes$gt2
     
+    SIM$origin1[j,] = SIM$last_ancestral_index
+    SIM$origin2[j,] = -SIM$last_ancestral_index
+    
+    
     return(j)
 }
 
@@ -166,6 +174,7 @@ SIM$addIndividualFromGenotypes = function(gt1,gt2) {
     SIM$gt1[j,] = gt1
     SIM$gt2[j,] = gt2
     
+   
     return(j)
 }
 
@@ -219,13 +228,15 @@ SIM$mate = function(i, j) {
     index = SIM$addIndividualFromGenotypes(gt1, gt2)
     
 
+    #gt1 =  recomb1 * SIM$gt1[i,]  +  (1-recomb1) * SIM$gt2[i,]
+    #gt2 =  recomb2 * SIM$gt1[j,]  +  (1-recomb2) * SIM$gt2[j,]
     
     if(!SWAP) {
-        SIM$origin1[index,] = recomb1 * i + (1-recomb1) * (-i);
-        SIM$origin2[index,] = recomb2 * j + (1-recomb2) * (-j);
+        SIM$origin1[index,] = recomb1 * SIM$origin1[i,] + (1-recomb1) * SIM$origin2[i,];
+        SIM$origin2[index,] = recomb2 * SIM$origin1[j,] + (1-recomb2) * SIM$origin2[j,];
     } else {
-        SIM$origin2[index,] = recomb1 * i + (1-recomb1) * (-i);
-        SIM$origin1[index,] = recomb2 * j + (1-recomb2) * (-j);
+        SIM$origin2[index,] = recomb1 * SIM$origin1[i,] + (1-recomb1) * SIM$origin2[i,];
+        SIM$origin1[index,] = recomb2 * SIM$origin1[j,] + (1-recomb2) * SIM$origin2[j,];
     }
 
     # last_gt <<- gt1 + gt2
@@ -236,7 +247,15 @@ SIM$mate = function(i, j) {
 
 
 
+SIM$reset = function() {
+    SIM$individuals_generated = 0
+}
 
+    
+    
+    
+     
+    
 
 
 
@@ -277,9 +296,9 @@ newNuclearFamily = function(fid) {
 
 
 #' @export
-newFamilyWithOffspring = function(fid, noffspring = 2) {
+newFamilyWithOffspring = function(familyid, noffspring = 2) {
     
-    fam = data.frame(fid = fid  , 
+    fam = data.frame(fid = familyid  , 
                      id = c(1:2) , 
                      father = c(0,0), 
                      mother = c(0,0), 
@@ -292,13 +311,9 @@ newFamilyWithOffspring = function(fid, noffspring = 2) {
     
     fam$gtindex = c(j1,j2)
     
-    
-    
-    
-    
     for(i in 1:noffspring) {
         j3 = SIM$mate(j1,j2)
-        newFamLine = c(fid, i+10, 1,2, 1 , j3)
+        newFamLine = c(familyid, i+10, 1,2, 1 , j3)
         fam = rbind(fam, newFamLine)
     }
     
@@ -310,9 +325,45 @@ newFamilyWithOffspring = function(fid, noffspring = 2) {
 
 
 
+#' @export
+computePairIBD12 = function(i,j) {
+    
+    q1 = SIM$origin1[i,]
+    q2 = SIM$origin2[i,]
+    
+    r1 = SIM$origin1[j,]
+    r2 = SIM$origin2[j,]
+    
+    
+    table(q1,q2)
+    
+    IBD1H1 = q1 == r1 | q1 == r2
+    IBD1H2 = q2 == r1 | q2 == r2
+    
+    
+    IBD12 = mean(IBD1H1 | IBD1H2)
+    IBD2 = mean(   (q1 == r1 & q2 == r2 )  | (q1 == r2 & q2 == r1) )
+    
+    
+    c(IBD1=IBD12-IBD2, IBD2=IBD2)
+}
 
 
 
+
+
+
+
+#' @export
+printMatrix = function(m) {
+    cat("      " , " " , sprintf("[%4d] ", 1:nrow(m) )  , "\n")   
+    
+    for(i in 1:nrow(m)) {
+        
+        cat(sprintf("[%4d]",i) , " " , sprintf(" %.3f ", m[i,]) , "\n")   
+    }
+    
+}
 
 
 

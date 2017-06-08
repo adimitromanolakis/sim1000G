@@ -1,7 +1,11 @@
 
 #' @export
-writePED = function(fam) {
+writePED = function(fam, filename = "out" ) {
     
+    
+        filename_ped = sprintf("%s.ped", filename)
+        filename_map = sprintf("%s.map", filename)
+        
     
         N = SIM$individuals_generated 
         fam[1,]
@@ -19,14 +23,17 @@ writePED = function(fam) {
         
         ids = sprintf("IND%s", seq(1,N))
         fam_header = data.frame( fam[,1:4], fam[,5],"1\t",  t(genotypes)) 
-        write.table(fam_header,file="out.ped",sep=" ",row=F,col=F,quote=F)
+        write.table(fam_header, file  =  filename_ped , sep=" ", row=F, col=F, quote=F)
         
         dim(fam)
         dim(vcf)
         
         map = data.frame( vcf$vcf[,1] , vcf$vcf[,3] , 0 , vcf$vcf[,2])
-        write.table(map,file="out.map",sep=" ",row=F,col=F,quote=F)
-        system("~/tools/prest-plus/prest --geno out.ped --map out.map --wped --ibs1 0.5")
+        write.table(map,   filename_map ,   sep=" ",  row=F,  col=F,  quote=F)
+        
+        cat("[] PED file written as ", filename_ped, "\n");
+        
+        # system("~/tools/prest-plus/prest --geno out.ped --map out.map --wped --ibs1 0.5")
 
 }
 

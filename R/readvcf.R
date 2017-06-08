@@ -10,7 +10,6 @@
 createVCF = function() {
     
     # node ../fq-thin-vcf-file.js --out vt.vcf --in chr2.vcf --thin 0.7
-    
     # bcftools view -s NA19904,NA19913,NA20317,NA20318,NA20334,NA20355,NA20359,NA20362 vt.vcf|grep -v '^##' > vt2.vcf
     
     #4 90645249 90759446 strand -1 id SNCA name SNCA bioType protein_coding
@@ -43,14 +42,13 @@ grep -v "^##" /tmp/1.vcf > haplosims/2.vcf
 
 
 
-
+#### Read a VCF file ####
 #' @export
 
 readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA) {
     
 
     
-    #### Read VCF ####
     
     
     
@@ -111,18 +109,16 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
     # 
     
     
-    cat("## Chromosome:  ", unique(vcf[,1]), 
+    cat("[##......] Chromosome:  ", unique(vcf[,1]), 
         " Mbp: " , min(vcf[,2])/1e6, 
         " Region Size: ", 1e-3 * ( max(vcf[,2])-min(vcf[,2]) ) ,"kb ",
-        "Num of variants:", dim(vcf)[1] ,
-        "\n");
-    
+        "Num of variants:", dim(vcf)[1] , "(after filtering)\n")
     
     
     ##
     
     
-  R = new.env()
+    R = new.env()
 
     R$vcf = vcf
     R$gt1 = gt1
