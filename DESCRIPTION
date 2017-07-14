@@ -4,12 +4,14 @@ Title: Haplotype simulations using data from 1000 genomes
 Version: 1.04
 Date: 2017-06-08
 Author: Laurent Briollais, Apostolos Dimitromanolakis
-Maintainer: Apostolos Dimitromanolakis <apostol@cs.toronto.edu>
+Maintainer: Apostolos Dimitromanolakis <apostolis@live.ca>
 Description: N/A
 License: GPL (>= 2)
 Depends:
     R (>= 2.15.2),
-    stats
+    stats,
+    hapsim,
+    stringr
 Encoding: latin1
 NeedsCompilation: no
 RoxygenNote: 5.0.1

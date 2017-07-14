@@ -3,9 +3,10 @@
 #vcf <- new.env()
 
 
-
-
-
+#' Creates a regional vcf file using bcftools to extract a region from 1000 genomes vcf files 
+#'
+#'
+#' @return none
 #' @export
 createVCF = function() {
     
@@ -39,12 +40,11 @@ grep -v "^##" /tmp/1.vcf > haplosims/2.vcf
 
 
 
-
-
-
-#### Read a VCF file ####
+#' Read a vcf file 
+#'
+#'
+#' @return none
 #' @export
-
 readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA) {
     
 

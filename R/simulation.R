@@ -274,9 +274,9 @@ SIM$reset = function() {
 
 
 #' @export
-newNuclearFamily = function(fid) {
+newNuclearFamily = function(family_id) {
     
-    fam = data.frame(fid = fid  , 
+    fam = data.frame(family_id = family_id  , 
                      id = c(1,2,3) , 
                      father = c(0,0,1) , 
                      mother = c(0,0,2) , 
@@ -296,9 +296,9 @@ newNuclearFamily = function(fid) {
 
 
 #' @export
-newFamilyWithOffspring = function(familyid, noffspring = 2) {
+newFamilyWithOffspring = function(family_id, noffspring = 2) {
     
-    fam = data.frame(fid = familyid  , 
+    fam = data.frame(fid = family_id  , 
                      id = c(1:2) , 
                      father = c(0,0), 
                      mother = c(0,0), 
@@ -313,7 +313,7 @@ newFamilyWithOffspring = function(familyid, noffspring = 2) {
     
     for(i in 1:noffspring) {
         j3 = SIM$mate(j1,j2)
-        newFamLine = c(familyid, i+10, 1,2, 1 , j3)
+        newFamLine = c(family_id, i+10, 1,2, 1 , j3)
         fam = rbind(fam, newFamLine)
     }
     
