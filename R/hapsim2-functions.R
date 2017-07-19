@@ -2,8 +2,8 @@
 
 
 
-
-#' @export
+#' Modified version of haplosim2 function from hapsim package.
+#'
 haplosim2 = function (n, hap, which.snp = NULL, seed = NULL, force.polym = TRUE, 
                       summary = TRUE) 
 {
