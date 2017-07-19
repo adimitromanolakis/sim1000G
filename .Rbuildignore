@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+data/
+docs/
+..pdf
+Makefile
+_config.yml
+include-filelist.txt
+examples/
+

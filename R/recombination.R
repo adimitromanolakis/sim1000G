@@ -67,7 +67,7 @@ generateSingleRecombinationVector = function(cm) {
 
 
 
-
+#' Holds the genetic map information that is used for simulations.
 #' @export
 geneticMap <- new.env()
 
@@ -82,22 +82,22 @@ geneticMap <- new.env()
 downloadGeneticMap = function(chromosome) {
 
 
-    fname = sprintf("genetic_map_GRCh37_chr%s.txt.gz" , chromosome )
+        fname = sprintf("genetic_map_GRCh37_chr%s.txt.gz" , chromosome )
 
-    url = sprintf("https://github.com/adimitromanolakis/geneticMap-GRCh37/raw/master/genetic_map_GRCh37_chr4.txt.gz")
+        url = sprintf("https://github.com/adimitromanolakis/geneticMap-GRCh37/raw/master/genetic_map_GRCh37_chr4.txt.gz")
 
-    dest_dir = system.file("data", fname, package = "sim1000G")
-    dest_dir = "."
+        dest_dir = system.file("data", fname, package = "sim1000G")
+        dest_dir = "."
 
-     cat("Downloading genetic map\n")
+        cat("Downloading genetic map\n")
         dest_dir = system.file("data", package = "sim1000G")
 
         dest_dir = "./"
         dest_path = sprintf("%s/genetic_map_GRCh37_chr4.txt.gz", dest_dir)
-        cat(dest_path,"\n")
-        file.exists(dest_path)
+        cat(" -> Saving genetic map to: " , dest_path,"\n")
+        #file.exists(dest_path)
 
-        download.file(url  ,  destfile = dest_path)
+        download.file(url  ,  destfile = dest_path, quiet=TRUE)
 
 
 }
@@ -130,8 +130,7 @@ readGeneticMap = function(chromosome, dir=".") {
 #' The file must be contain the following columns in order: chromosome, basepaire, rate(not used), centimorgan
 #'
 #'
-#' @param chromosome Chromosome number to download recombination distances from.
-#' @param dir Directory the map file is located.
+#' @param filelocation Filename containing the genetic map
 #'
 #' @export
 readGeneticMapFromFile = function(filelocation) {
@@ -158,10 +157,12 @@ readGeneticMapFromFile = function(filelocation) {
 
 
 
-
+#' Converts centimorgan position to base-pair.
+#' @param bp vector of base-pair positions
 #' @export
-getCMfromBP = function(bp) approx( geneticMap$bp, geneticMap$cm, bp )$y
-
+getCMfromBP = function(bp) {
+    approx( geneticMap$bp, geneticMap$cm, bp )$y
+}
 
 
 
@@ -171,9 +172,8 @@ getCMfromBP = function(bp) approx( geneticMap$bp, geneticMap$cm, bp )$y
 #' In addition it showt the locations of the markers that have been read.
 #'
 #'
-#' @param n Number of distances to generate
+#' @param bp Vector of base-pair positions to generate a plot for
 #'
-#' @return vector of recombination distances in centimorgan
 #'
 #' @export
 plotRegionalGeneticMap = function(bp) {
@@ -192,19 +192,19 @@ plotRegionalGeneticMap = function(bp) {
 
 
 
-
+#' Contains recombination model information.
+#'
+#' This vector contains the density between two recombination events, as a cumulative density function.
 ##' @export
 crossoverCDFvector = NA
 
 
-##' @export
 fgammamod = function(x,L, n) {
 
     (x**(n-1))*exp(-L*x)    *  (L**n)/gamma(n)
 }
 
 
-##' @export
 fstar = function(x,q,l) {
 
 
@@ -224,10 +224,8 @@ fstar = function(x,q,l) {
 #title("Crossover distance")
 #abline(h=1,col="gray")
 
-#' @export
 crossoverCDF = new.env()
 
-##' @export
 makeCDF = function() {
 
     dens = sapply(seq(0,4,by=0.001), function(x) fstar(x,1,1) )  # originally was 3.2

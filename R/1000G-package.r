@@ -11,6 +11,10 @@
 #' @import hapsim
 #' @import MASS
 #' @import stringr
+#' @import graphics
+#' @import stats
+#' @import utils
+
 NULL
 
 

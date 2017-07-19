@@ -60,7 +60,7 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
         cat("[#.......] Loading VCF environment from rdata file\n")
 
         e1 = new.env()
-        load(filename, env=e1)
+        load(filename, envir=e1)
 
         vcf = e1$vcf
         cat("[##......] Number of variants in VCF: ", nrow(vcf$vcf) , "\n");

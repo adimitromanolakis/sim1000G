@@ -1,0 +1,7 @@
+NAMESPACE
+DESCRIPTION
+R/
+man/
+tests/
+inst/
+vignettes/
