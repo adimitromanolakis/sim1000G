@@ -7,4 +7,5 @@ Makefile
 _config.yml
 include-filelist.txt
 examples/
+genetic_map_GRCh37_chr4.txt.gz
 

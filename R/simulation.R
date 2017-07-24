@@ -160,7 +160,7 @@ SIM$addIndividualFromGenotypes = function(gt1,gt2) {
     SIM$individuals_generated = SIM$individuals_generated + 1
     j = SIM$individuals_generated
 
-    cat("Adding individual ",j, " from specified genotypes\n");
+    # cat("Adding individual ",j, " from specified genotypes\n");
 
     SIM$gt1[j,] = gt1
     SIM$gt2[j,] = gt2
@@ -278,7 +278,8 @@ newNuclearFamily = function(family_id) {
                      id = c(1,2,3) ,
                      father = c(0,0,1) ,
                      mother = c(0,0,2) ,
-                     sex = c(1,2,1)
+                     sex = c(1,2,1),
+                     generation = c(1,1,2)
     )
 
 
@@ -308,7 +309,8 @@ newFamilyWithOffspring = function(family_id, noffspring = 2) {
                      id = c(1:2) ,
                      father = c(0,0),
                      mother = c(0,0),
-                     sex = c(1,2)
+                     sex = c(1,2),
+                     generation = c(1,1)
     )
 
 
@@ -319,12 +321,88 @@ newFamilyWithOffspring = function(family_id, noffspring = 2) {
 
     for(i in 1:noffspring) {
         j3 = SIM$mate(j1,j2)
-        newFamLine = c(family_id, i+10, 1,2, 1 , j3)
+        newFamLine = c(family_id, i+10, 1,2, sample(c(1,2), 1) ,2 , j3)
         fam = rbind(fam, newFamLine)
     }
 
     return (fam)
 }
+
+
+
+
+
+
+
+
+
+#' Generates genotype data for a family of 3 generations
+#'
+#'
+#'
+#' @param family_id What will be the family_id (for example: 100)
+#' @param noffspring2 Number of offspring in generation 2
+#' @param noffspring3 Number of offspring in generation 3 (vector of length noffspring2)
+#'
+#' @return family structure object
+#'
+#' @export
+newFamily3generations = function(familyid, noffspring2 = 2, noffspring3 = c(1,1)) {
+
+    if(length(noffspring3) == noffspring2){
+
+        fam = data.frame(fid = familyid  ,
+                         id = c(1:2) ,
+                         father = c(0,0),
+                         mother = c(0,0),
+                         sex = c(1,2),
+                         generation = c(1,1)
+        )
+
+
+        j1 = SIM$addUnrelatedIndividual()
+        j2 = SIM$addUnrelatedIndividual()
+
+        fam$gtindex = c(j1,j2)
+
+        id2 <- 2
+        for(i in 1:noffspring2) {
+            id2 <- id2 + 1
+            ids <- id2 + 1
+            j3 = SIM$mate(j1,j2)
+            gender2 <- sample(c(1,2), 1)
+            genders <- ifelse(gender2 == 1, 2, 1)
+            newFamLine = c(familyid, id2, 1,2, gender2,2,  j3)
+            fam = rbind(fam, newFamLine)
+
+            if(length(noffspring3[i] > 0)){
+                j4 <- SIM$addUnrelatedIndividual()
+                newFamLine = c(familyid, ids, 0,0, genders ,2,  j4)
+                fam = rbind(fam, newFamLine)
+
+                id3 <- ids
+                for(j in 1:noffspring3[i]){
+                    id3 <- id3 + 1
+                    j5 <- SIM$mate(j3, j4)
+                    father_id <- ifelse(gender2 == 1, id2, ids)
+                    mother_id <- ifelse(gender2 == 2, id2, ids)
+                    newFamLine = c(familyid, id3, father_id, mother_id, sample(c(1, 2), 1) ,3,  j5)
+                    fam = rbind(fam, newFamLine)
+
+
+                }
+                id2 <- id3
+            }
+        }
+
+        return (fam)
+    }  else  {
+        print(noffspring2)
+        print(noffspring3)
+        stop("The vector for number of offspring in the third generation (possibly zeros) must be equal to the number of offspring in the second generation")
+    }
+}
+
 
 
 
@@ -361,6 +439,78 @@ computePairIBD12 = function(i,j) {
 
     c(IBD1=IBD12-IBD2, IBD2=IBD2)
 }
+
+
+
+
+
+
+#' Computes pairwise IBD1 for a specific pair of individuals
+#'
+#'
+#'
+#' @param i Index of first individual
+#' @param j Index of second individual
+#'
+#' @return Mean IBD1 as computed from shared haplotypes
+#'
+#' @export
+computePairIBD1 = function(i,j) {
+
+    q1 = SIM$origin1[i,]
+    q2 = SIM$origin2[i,]
+
+    r1 = SIM$origin1[j,]
+    r2 = SIM$origin2[j,]
+
+
+
+    IBD1H1 = q1 == r1 | q1 == r2
+    IBD1H2 = q2 == r1 | q2 == r2
+
+    IBD12 = mean(IBD1H1 | IBD1H2)
+    IBD2 = mean(   (q1 == r1 & q2 == r2 )  | (q1 == r2 & q2 == r1) )
+
+
+    IBD1=IBD12-IBD2
+
+}
+
+
+
+#' Computes pairwise IBD2 for a specific pair of individuals
+#'
+#'
+#'
+#' @param i Index of first individual
+#' @param j Index of second individual
+#'
+#' @return Mean IBD2 as computed from shared haplotypes
+#'
+#' @export
+computePairIBD2 = function(i,j) {
+
+  q1 = SIM$origin1[i,]
+  q2 = SIM$origin2[i,]
+
+  r1 = SIM$origin1[j,]
+  r2 = SIM$origin2[j,]
+
+   IBD2 = mean(   (q1 == r1 & q2 == r2 )  | (q1 == r2 & q2 == r1) )
+
+
+  IBD2
+
+}
+
+
+
+
+
+
+
+
+
 
 
 
