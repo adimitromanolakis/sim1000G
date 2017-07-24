@@ -20,4 +20,4 @@ install.packages("sim1000G")
 Documentation and code examples can be found at:
 
 [SimulatingFamilyData](https://adimitromanolakis.github.io/sim1000G/inst/doc/SimulatingFamilyData.html)
-xamples.pdf]
+
