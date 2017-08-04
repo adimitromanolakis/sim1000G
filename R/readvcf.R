@@ -21,16 +21,18 @@ createVCF = function() {
 CHROM=4
 VCF=~/1000genomes/ALL.chr"$CHROM".*.vcf.gz
 REGION=4:90645249-90759446
-REGION=4:60645249-61569446
+REGION=4:60995249-61569446
 
 
 # 4 77356252 77704404 strand 1 id SHROOM3 name SHROOM3 bioType protein_coding
-REGION=4:77356252-77704404
+#REGION=4:77356252-77704404
+#REGION=5:77356252-77704404
 
 
 
-bcftools view -S CEU.txt --force-samples -r $REGION  $VCF > /tmp/1.vcf
-grep -v "^##" /tmp/1.vcf > haplosims/2.vcf
+bcftools view -S /tmp/CEU.txt --force-samples -r $REGION  $VCF > /tmp/1.vcf
+grep -v "^##" /tmp/1.vcf > /tmp/2.vcf
+cp /tmp/2.vcf ~/tmp
 
 
 
@@ -51,6 +53,13 @@ grep -v "^##" /tmp/1.vcf > haplosims/2.vcf
 #'
 #' @return none
 #'
+#' @examples
+#'  \dontrun{
+#' library(sim1000G)
+#` vcf <- readVCF("region.vcf.gz", maxNumberOfVariants = 100, min_maf = 0.02, max_maf = 0.1)
+#` readGeneticMap(chromosome = 4)
+#` startSimulation(vcf, totalNumberOfIndividuals = 500)
+#'  }
 #' @export
 readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA) {
 
@@ -94,6 +103,7 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
         " Mbp: " , min(vcf[,2])/1e6,
         " Region Size: ", 1e-3 * ( max(vcf[,2])-min(vcf[,2]) ) ,"kb ",
         "Num of variants:", dim(vcf)[1] ,
+        "Num of individuals:", ncol(vcf)-9,
         "\n");
 
 

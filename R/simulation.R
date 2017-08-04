@@ -26,6 +26,20 @@ SIM = new.env()
 #' @param vcf Input vcf file of a region (can be .gz). Must contain phased data.
 #' @param totalNumberOfIndividuals Maximum Number of individuals that will ever be generated
 #' @param randomdata If 1, disregards the genotypes in the vcf file and generates markers that are not in LD. Generally do not use.
+#'
+#' @examples
+#' library("sim1000G")
+#' library(gplots)
+#'
+#' vcf = readVCF("./region.vcf.gz", maxNumberOfVariants = 300 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' downloadGeneticMap( chromosome  = 4)
+#' readGeneticMap( chromosome = 4)
+#'
+#' plotRegionalGeneticMap(vcf$vcf[,2]+1)
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 1200)
+#'
 #' @export
 startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) {
 
@@ -271,6 +285,11 @@ SIM$reset = function() {
 #'
 #' @return family structure object
 #'
+#' @examples
+#' # Previously you should have run the function startSimulation
+#' \dontrun{
+#' fam1 = newNuclearFamily(10)
+#' }
 #' @export
 newNuclearFamily = function(family_id) {
 
@@ -301,6 +320,11 @@ newNuclearFamily = function(family_id) {
 #' @param noffspring Number of offsprings that this family will have
 #'
 #' @return family structure object
+#'
+#' @examples
+#' \dontrun{
+#'   ped_line = newFamilyWithOffspring(10,3)
+#' }
 #'
 #' @export
 newFamilyWithOffspring = function(family_id, noffspring = 2) {
@@ -340,7 +364,7 @@ newFamilyWithOffspring = function(family_id, noffspring = 2) {
 #'
 #'
 #'
-#' @param family_id What will be the family_id (for example: 100)
+#' @param familyid What will be the family_id (for example: 100)
 #' @param noffspring2 Number of offspring in generation 2
 #' @param noffspring3 Number of offspring in generation 3 (vector of length noffspring2)
 #'

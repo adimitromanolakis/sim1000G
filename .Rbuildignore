@@ -6,6 +6,7 @@ docs/
 Makefile
 _config.yml
 include-filelist.txt
-examples/
+examples/genetic_map_GRCh37_chr4.txt.gz
+examples/Rplots.pdf
 genetic_map_GRCh37_chr4.txt.gz
 
