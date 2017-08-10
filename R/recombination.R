@@ -84,7 +84,10 @@ downloadGeneticMap = function(chromosome) {
 
         fname = sprintf("genetic_map_GRCh37_chr%s.txt.gz" , chromosome )
 
-        url = sprintf("https://github.com/adimitromanolakis/geneticMap-GRCh37/raw/master/genetic_map_GRCh37_chr4.txt.gz")
+        url = sprintf(
+            "https://github.com/adimitromanolakis/geneticMap-GRCh37/raw/master/genetic_map_GRCh37_chr%s.txt.gz",
+            chromosome
+        )
 
         dest_dir = system.file("data", fname, package = "sim1000G")
         dest_dir = "."
@@ -107,8 +110,10 @@ downloadGeneticMap = function(chromosome) {
 
 #' Reads a genetic map downloaded from the function downloadGeneticMap.
 #'
-#' The map contains a complete chromosome to be used for simulations.
-#' The file must be downloaded using the function downloadGeneticMap.
+#' The map must contains a complete chromosome or enough markers to cover the area that
+#' will be simulated.
+#'
+#' The file can be downloaded from the provided genetic maps by using the function downloadGeneticMap.
 #'
 #'
 #' @param chromosome Chromosome number to download recombination distances from.
@@ -156,8 +161,30 @@ readGeneticMapFromFile = function(filelocation) {
 
 
 
+#' Generates a fake genetic map.
+#'
+#'
+#' Generates a fake genetic map by approximating 1 cm / Mbp. Only used for examples.
+#'
+#' @export
+generateFakeGeneticMap = function() {
 
-#' Converts centimorgan position to base-pair.
+    n = 10000
+    bp = seq(0,300e6, by=5000)
+    cm = bp / 1e6
+
+    geneticMap$chr = rep(4, length(bp))
+    geneticMap$bp = bp
+    geneticMap$cm = cm
+
+}
+
+
+
+
+#' Converts centimorgan position to base-pair. Return a list of centimorgan positions that correspond
+#' to the bp vector (in basepairs).
+#'
 #' @param bp vector of base-pair positions
 #' @export
 getCMfromBP = function(bp) {
@@ -169,7 +196,7 @@ getCMfromBP = function(bp) {
 #' Generates a plot of the genetic map for a specified region.
 #'
 #' The plot shows the centimorgan vs base-pair positions.
-#' In addition it showt the locations of the markers that have been read.
+#' The position of markers that have been read is also depicted as vertical lines
 #'
 #'
 #' @param bp Vector of base-pair positions to generate a plot for

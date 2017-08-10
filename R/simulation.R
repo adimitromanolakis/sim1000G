@@ -20,12 +20,36 @@ SIM = new.env()
 
 
 
+# vcf_url = "https://adimitromanolakis.github.io/sim1000G/inst/examples/region.vcf.gz"
+# vcf_file = gzcon(url(vcf_url))
+# vcf_file = textConnection( readLines(vcf_file) )
+# vcf = readVCF(vcf_file, maxNumberOfVariants = 300 , min_maf = 0.12 ,max_maf = NA)
+#
+# downloadGeneticMap( chromosome  = 4)
+# readGeneticMap( chromosome = 4)
+
+
 
 #' Start the simulation
 #'
 #' @param vcf Input vcf file of a region (can be .gz). Must contain phased data.
 #' @param totalNumberOfIndividuals Maximum Number of individuals that will ever be generated
 #' @param randomdata If 1, disregards the genotypes in the vcf file and generates markers that are not in LD. Generally do not use.
+#'
+#' @examples
+#' library("sim1000G")
+#' library(gplots)
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' readVCF( sprintf("%s/region.vcf.gz", examples_dir), maxNumberOfVariants = 200 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#'
+#' plotRegionalGeneticMap(vcf$vcf[,2]+1)
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 1200)
+#'
 #' @export
 startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) {
 
@@ -271,6 +295,16 @@ SIM$reset = function() {
 #'
 #' @return family structure object
 #'
+#' @examples
+#'
+#' plotRegionalGeneticMap(vcf$vcf[,2]+1)
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 1200)
+#' fam1 = newNuclearFamily(1)
+#' fam2 = newNuclearFamily(2)
+#'
+#' # See also the documentation on our github page
+#'
 #' @export
 newNuclearFamily = function(family_id) {
 
@@ -301,6 +335,11 @@ newNuclearFamily = function(family_id) {
 #' @param noffspring Number of offsprings that this family will have
 #'
 #' @return family structure object
+#'
+#' @examples
+#'
+#' ped_line = newFamilyWithOffspring(10,3)
+#'
 #'
 #' @export
 newFamilyWithOffspring = function(family_id, noffspring = 2) {
@@ -340,11 +379,17 @@ newFamilyWithOffspring = function(family_id, noffspring = 2) {
 #'
 #'
 #'
-#' @param family_id What will be the family_id (for example: 100)
+#' @param familyid What will be the family_id (for example: 100)
 #' @param noffspring2 Number of offspring in generation 2
 #' @param noffspring3 Number of offspring in generation 3 (vector of length noffspring2)
 #'
 #' @return family structure object
+#'
+#' @examples
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 500)
+#'
+#' ped_line = newFamily3generations(12, 3, c(3,3,2) )
 #'
 #' @export
 newFamily3generations = function(familyid, noffspring2 = 2, noffspring3 = c(1,1)) {
@@ -417,6 +462,18 @@ newFamily3generations = function(familyid, noffspring2 = 2, noffspring3 = c(1,1)
 #'
 #' @return Mean IBD1 and IBD2 as computed from shared haplotypes
 #'
+#' @examples
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 1200)
+#'
+#' ped1 = newNuclearFamily(1)
+#'
+#' v = computePairIBD12(1, 3)
+#'
+#' cat("IBD1 of pair = ", v[1], "\n");
+#' cat("IBD2 of pair = ", v[2], "\n");
+#'
+#'
 #' @export
 computePairIBD12 = function(i,j) {
 
@@ -445,7 +502,8 @@ computePairIBD12 = function(i,j) {
 
 
 
-#' Computes pairwise IBD1 for a specific pair of individuals
+#' Computes pairwise IBD1 for a specific pair of individuals.
+#' See function computePairIBD12 for description.
 #'
 #'
 #'
@@ -517,8 +575,7 @@ computePairIBD2 = function(i,j) {
 
 
 
-#' Prints a matrix
-#'
+#' Utility function that prints a matrix. Useful for IBD12 matrices.
 #'
 #'
 #' @param m Matrix to be printed
