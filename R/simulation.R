@@ -28,6 +28,8 @@ SIM = new.env()
 # downloadGeneticMap( chromosome  = 4)
 # readGeneticMap( chromosome = 4)
 
+
+
 #' Start the simulation
 #'
 #' @param vcf Input vcf file of a region (can be .gz). Must contain phased data.
@@ -39,14 +41,15 @@ SIM = new.env()
 #' library(gplots)
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' readVCF( sprintf("%s/region.vcf.gz", examples_dir), maxNumberOfVariants = 200 , min_maf = 0.12 ,max_maf = NA)
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
-#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' # For a realistic genetic map, use the functions downloadGeneticMap / readGeneticMap
 #' generateFakeGeneticMap()
 #'
 #' plotRegionalGeneticMap(vcf$vcf[,2]+1)
 #'
-#' startSimulation(vcf, totalNumberOfIndividuals = 1200)
+#' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
 #' @export
 startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) {
@@ -295,7 +298,14 @@ SIM$reset = function() {
 #'
 #' @examples
 #'
-#' plotRegionalGeneticMap(vcf$vcf[,2]+1)
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
 #'
 #' startSimulation(vcf, totalNumberOfIndividuals = 1200)
 #' fam1 = newNuclearFamily(1)
@@ -385,7 +395,16 @@ newFamilyWithOffspring = function(family_id, noffspring = 2) {
 #'
 #' @examples
 #'
-#' startSimulation(vcf, totalNumberOfIndividuals = 500)
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
 #' ped_line = newFamily3generations(12, 3, c(3,3,2) )
 #'
@@ -462,7 +481,16 @@ newFamily3generations = function(familyid, noffspring2 = 2, noffspring3 = c(1,1)
 #'
 #' @examples
 #'
-#' startSimulation(vcf, totalNumberOfIndividuals = 1200)
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
 #' ped1 = newNuclearFamily(1)
 #'

@@ -16,9 +16,21 @@ family structure object
 Simulates genotypes for 1 family with 1 offspring
 }
 \examples{
-# Previously you should have run the function startSimulation
-\dontrun{
-fam1 = newNuclearFamily(10)
-}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("\%s/region.vcf.gz", examples_dir)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the functions downloadGeneticMap / readGeneticMap
+generateFakeGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 1200)
+fam1 = newNuclearFamily(1)
+fam2 = newNuclearFamily(2)
+
+# See also the documentation on our github page
+
 }
 

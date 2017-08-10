@@ -177,6 +177,9 @@ generateFakeGeneticMap = function() {
     geneticMap$bp = bp
     geneticMap$cm = cm
 
+    makeCDF();
+    0;
+
 }
 
 

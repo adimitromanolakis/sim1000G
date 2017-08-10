@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulation.R
 \name{printMatrix}
 \alias{printMatrix}
-\title{Prints a matrix}
+\title{Utility function that prints a matrix. Useful for IBD12 matrices.}
 \usage{
 printMatrix(m)
 }
@@ -10,6 +10,6 @@ printMatrix(m)
 \item{m}{Matrix to be printed}
 }
 \description{
-Prints a matrix
+Utility function that prints a matrix. Useful for IBD12 matrices.
 }
 

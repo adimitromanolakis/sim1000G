@@ -11,6 +11,6 @@ plotRegionalGeneticMap(bp)
 }
 \description{
 The plot shows the centimorgan vs base-pair positions.
-In addition it showt the locations of the markers that have been read.
+The position of markers that have been read is also depicted as vertical lines
 }
 

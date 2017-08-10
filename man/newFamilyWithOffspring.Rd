@@ -18,9 +18,9 @@ family structure object
 Simulates genotypes for 1 family with n offspring
 }
 \examples{
-\dontrun{
-  ped_line = newFamilyWithOffspring(10,3)
-}
+
+ped_line = newFamilyWithOffspring(10,3)
+
 
 }
 

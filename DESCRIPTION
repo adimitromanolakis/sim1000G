@@ -2,7 +2,7 @@ Package: sim1000G
 Type: Package
 Title: Genotype Simulations for Rare or Common Variants Using Haplotypes from 1000 Genomes
 Version: 1.3
-Date: 2017-07-08
+Date: 2017-08-08
 Author: Apostolos Dimitromanolakis <apostolis@live.ca>, 
     Jingxiong Xu <jingxiong.xu@mail.utoronto.ca>,
     Agnieszka Krol <krol@lunenfeld.ca>,

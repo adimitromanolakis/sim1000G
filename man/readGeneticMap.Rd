@@ -12,7 +12,10 @@ readGeneticMap(chromosome, dir = ".")
 \item{dir}{Directory the map file is located.}
 }
 \description{
-The map contains a complete chromosome to be used for simulations.
-The file must be downloaded using the function downloadGeneticMap.
+The map must contains a complete chromosome or enough markers to cover the area that
+will be simulated.
+}
+\details{
+The file can be downloaded from the provided genetic maps by using the function downloadGeneticMap.
 }
 

@@ -17,4 +17,26 @@ Mean IBD1 and IBD2 as computed from shared haplotypes
 \description{
 Computes pairwise IBD1/2 for a specific pair of individuals
 }
+\examples{
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("\%s/region.vcf.gz", examples_dir)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the functions downloadGeneticMap / readGeneticMap
+generateFakeGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+ped1 = newNuclearFamily(1)
+
+v = computePairIBD12(1, 3)
+
+cat("IBD1 of pair = ", v[1], "\\n");
+cat("IBD2 of pair = ", v[2], "\\n");
+
+
+}
 

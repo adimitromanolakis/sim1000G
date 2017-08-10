@@ -17,18 +17,19 @@ startSimulation(vcf, totalNumberOfIndividuals = 250, randomdata = 0)
 Start the simulation
 }
 \examples{
-\dontrun{
 library("sim1000G")
 library(gplots)
 
-vcf = readVCF("./region.vcf.gz", maxNumberOfVariants = 300 , min_maf = 0.12 ,max_maf = NA)
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("\%s/region.vcf.gz", examples_dir)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 
-downloadGeneticMap( chromosome  = 4)
-readGeneticMap( chromosome = 4)
+# For a realistic genetic map, use the functions downloadGeneticMap / readGeneticMap
+generateFakeGeneticMap()
 
 plotRegionalGeneticMap(vcf$vcf[,2]+1)
 
-startSimulation(vcf, totalNumberOfIndividuals = 1200)
-}
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
 }
 

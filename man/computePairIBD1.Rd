@@ -2,7 +2,8 @@
 % Please edit documentation in R/simulation.R
 \name{computePairIBD1}
 \alias{computePairIBD1}
-\title{Computes pairwise IBD1 for a specific pair of individuals}
+\title{Computes pairwise IBD1 for a specific pair of individuals.
+See function computePairIBD12 for description.}
 \usage{
 computePairIBD1(i, j)
 }
@@ -15,6 +16,7 @@ computePairIBD1(i, j)
 Mean IBD1 as computed from shared haplotypes
 }
 \description{
-Computes pairwise IBD1 for a specific pair of individuals
+Computes pairwise IBD1 for a specific pair of individuals.
+See function computePairIBD12 for description.
 }
 

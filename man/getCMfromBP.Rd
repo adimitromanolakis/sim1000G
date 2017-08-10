@@ -2,7 +2,8 @@
 % Please edit documentation in R/recombination.R
 \name{getCMfromBP}
 \alias{getCMfromBP}
-\title{Converts centimorgan position to base-pair.}
+\title{Converts centimorgan position to base-pair. Return a list of centimorgan positions that correspond
+to the bp vector (in basepairs).}
 \usage{
 getCMfromBP(bp)
 }
@@ -10,6 +11,7 @@ getCMfromBP(bp)
 \item{bp}{vector of base-pair positions}
 }
 \description{
-Converts centimorgan position to base-pair.
+Converts centimorgan position to base-pair. Return a list of centimorgan positions that correspond
+to the bp vector (in basepairs).
 }
 
