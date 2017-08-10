@@ -28,8 +28,6 @@ SIM = new.env()
 # downloadGeneticMap( chromosome  = 4)
 # readGeneticMap( chromosome = 4)
 
-
-
 #' Start the simulation
 #'
 #' @param vcf Input vcf file of a region (can be .gz). Must contain phased data.
