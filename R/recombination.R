@@ -5,6 +5,10 @@
 #' @param n Number of distances to generate
 #'
 #' @return recombination distances in centimorgan
+#' @examples
+#'
+#' library("sim1000G")
+#' mean ( generateRecombinationDistances_noInterference ( 200 ) )
 #'
 #' @export
 generateRecombinationDistances_noInterference = function ( n ) {
@@ -19,6 +23,18 @@ generateRecombinationDistances_noInterference = function ( n ) {
 #' The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )
 #'
 #' @param cm The length of the region that we want to generate recombination distances.
+#'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#' generateSingleRecombinationVector( 1:100 )
 #'
 #' @export
 generateSingleRecombinationVector = function(cm) {
@@ -78,6 +94,14 @@ geneticMap <- new.env()
 #'
 #' @param chromosome Chromosome number to download recombination distances from.
 #'
+#'
+#' @examples
+#'
+#' \dontrun{
+#'
+#' downloadGeneticMap(22)
+#'
+#' }
 #' @export
 downloadGeneticMap = function(chromosome) {
 
@@ -119,6 +143,17 @@ downloadGeneticMap = function(chromosome) {
 #' @param chromosome Chromosome number to download recombination distances from.
 #' @param dir Directory the map file is located.
 #'
+#'
+#'
+#' @examples
+#'
+#' \dontrun{
+#'
+#' downloadGeneticMap(22)
+#' readGeneticMap(22)
+#'
+#' }
+#'
 #' @export
 readGeneticMap = function(chromosome, dir=".") {
 
@@ -136,7 +171,14 @@ readGeneticMap = function(chromosome, dir=".") {
 #'
 #'
 #' @param filelocation Filename containing the genetic map
+#' @examples
 #'
+#' \dontrun{
+#'
+#'
+#' readGeneticMapFromFile("genetic_map_GRCh37_chr4.txt.gz")
+#'
+#' }
 #' @export
 readGeneticMapFromFile = function(filelocation) {
 
@@ -166,6 +208,18 @@ readGeneticMapFromFile = function(filelocation) {
 #'
 #' Generates a fake genetic map by approximating 1 cm / Mbp. Only used for examples.
 #'
+#'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#'
 #' @export
 generateFakeGeneticMap = function() {
 
@@ -189,6 +243,20 @@ generateFakeGeneticMap = function() {
 #' to the bp vector (in basepairs).
 #'
 #' @param bp vector of base-pair positions
+#'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#' getCMfromBP(seq(1e6,100e6,by=1e6))
+#'
+#'
 #' @export
 getCMfromBP = function(bp) {
     approx( geneticMap$bp, geneticMap$cm, bp )$y
@@ -203,6 +271,15 @@ getCMfromBP = function(bp) {
 #'
 #'
 #' @param bp Vector of base-pair positions to generate a plot for
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#' plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))
 #'
 #'
 #' @export

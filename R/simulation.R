@@ -538,6 +538,25 @@ computePairIBD12 = function(i,j) {
 #'
 #' @return Mean IBD1 as computed from shared haplotypes
 #'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 200)
+#'
+#' ped1 = newNuclearFamily(1)
+#'
+#' v = computePairIBD1(1, 3)
+#'
+#' cat("IBD1 of pair = ", v, "\n");
+#'
 #' @export
 computePairIBD1 = function(i,j) {
 
@@ -570,6 +589,26 @@ computePairIBD1 = function(i,j) {
 #' @param j Index of second individual
 #'
 #' @return Mean IBD2 as computed from shared haplotypes
+#'
+#'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeGeneticMap()
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 200)
+#'
+#' ped1 = newNuclearFamily(1)
+#'
+#' v = computePairIBD2(1, 3)
+#'
+#' cat("IBD2 of pair = ", v, "\n");
 #'
 #' @export
 computePairIBD2 = function(i,j) {
@@ -605,7 +644,12 @@ computePairIBD2 = function(i,j) {
 #'
 #'
 #' @param m Matrix to be printed
+#'
+#' @examples
+#'
+#' printMatrix (  matrix(runif(16), nrow=4) )
 #' @export
+#'
 printMatrix = function(m) {
     cat("      " , " " , sprintf("[%4d] ", 1:nrow(m) )  , "\n")
 
