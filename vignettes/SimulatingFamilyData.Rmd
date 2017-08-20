@@ -199,8 +199,10 @@ time10families = function() {
 fam <- time10families() 
 
 
-writePED(vcf, fam,"/tmp/out")
 
+# Uncomment the following line to write a plink compatible ped/map file
+
+# writePED(vcf, fam,"out")
 
 
 
