@@ -41,9 +41,9 @@ output:
 sim1000G depends on two R packages stringr and hapsim. Stringr is included in CRAN and can be installed as usual. Hapsim, can be installed from its source package.
 
 
-```{cpp}
-install.packages("stringr")
-install.packages("hapsim_0.31.tar.gz",repos=NULL, source=T)
+```{R}
+if(0) install.packages("stringr")
+if(0) install.packages("hapsim_0.31.tar.gz",repos=NULL, source=T)
 
 ```
 
@@ -51,8 +51,8 @@ install.packages("hapsim_0.31.tar.gz",repos=NULL, source=T)
 
 The sim1000G package can then be installed: 
 
-```{cpp}
-install.packages("sim1000G_1.04.tar.gz",repos=NULL, source=T)
+```{R}
+if(0) install.packages("sim1000G_1.04.tar.gz",repos=NULL, source=T)
 ```
 
 
@@ -63,9 +63,7 @@ install.packages("sim1000G_1.04.tar.gz",repos=NULL, source=T)
 The genetic map we use is from the Hapmap 2010 release, lifted over to GrCH37 coordinates. It  was downloaded from:
 
 
-```{cpp}
 ftp://ftp.ncbi.nlm.nih.gov/hapmap/recombination/2011-01_phaseII_B37/
-```
 
 
 

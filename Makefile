@@ -12,7 +12,7 @@ vin:
 
 
 crancheck:
-	cd .. && R CMD check --as-cran sim1000G_1.3.tar.gz
+	cd .. && R CMD check --as-cran sim1000G_1.32.tar.gz
 
 
 tgz:

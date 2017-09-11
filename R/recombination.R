@@ -33,7 +33,7 @@ generateRecombinationDistances_noInterference = function ( n ) {
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' generateUniformGeneticMap()
 #' generateSingleRecombinationVector( 1:100 )
 #'
 #' @export
@@ -120,7 +120,7 @@ downloadGeneticMap = function(chromosome) {
         dest_dir = system.file("data", package = "sim1000G")
 
         dest_dir = "./"
-        dest_path = sprintf("%s/genetic_map_GRCh37_chr4.txt.gz", dest_dir)
+        dest_path = sprintf("%s/genetic_map_GRCh37_chr%s.txt.gz", dest_dir, chromosome)
         cat(" -> Saving genetic map to: " , dest_path,"\n")
         #file.exists(dest_path)
 
@@ -165,9 +165,11 @@ readGeneticMap = function(chromosome, dir=".") {
 
 
 
-#' Reads a genetic map to be used for simulations.
+#' Reads a genetic map to be used for simulations. The genetic map should be
+#' of a single chromosome and covering the extent of the region to be simulated.
+#' Whole chromosome genetic maps can also be used.
 #'
-#' The file must be contain the following columns in order: chromosome, basepaire, rate(not used), centimorgan
+#' The file must be contain the following columns in the same order: chromosome, basepaire, rate(not used), centimorgan
 #'
 #'
 #' @param filelocation Filename containing the genetic map
@@ -197,8 +199,8 @@ readGeneticMapFromFile = function(filelocation) {
 
     cat("      -> Genetic map has" , length(geneticMap$bp), "entries\n");
 
-    makeCDF();
-    0;
+    makeCDF()
+    0
 }
 
 
@@ -218,10 +220,11 @@ readGeneticMapFromFile = function(filelocation) {
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' generateUniformGeneticMap()
+#' plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))
 #'
 #' @export
-generateFakeGeneticMap = function() {
+generateUniformGeneticMap = function() {
 
     n = 10000
     bp = seq(0,300e6, by=5000)
@@ -253,7 +256,7 @@ generateFakeGeneticMap = function() {
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' generateUniformGeneticMap()
 #' getCMfromBP(seq(1e6,100e6,by=1e6))
 #'
 #'
@@ -278,7 +281,7 @@ getCMfromBP = function(bp) {
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' generateUniformGeneticMap()
 #' plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))
 #'
 #'

@@ -30,7 +30,8 @@ SIM = new.env()
 
 
 
-#' Start the simulation
+#' Starts and initializes the data structures required for a simulation. A VCF file
+#' should be read beforehand with the function readVCF.
 #'
 #' @param vcf Input vcf file of a region (can be .gz). Must contain phased data.
 #' @param totalNumberOfIndividuals Maximum Number of individuals that will ever be generated
@@ -45,7 +46,10 @@ SIM = new.env()
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For a realistic genetic map, use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#'
+#' genetic_map_of_region = system.file("examples","chr4-geneticmap.txt", package = "sim1000G")
+#' readGeneticMapFromFile(genetic_map_of_region)
+#'
 #'
 #' plotRegionalGeneticMap(vcf$vcf[,2]+1)
 #'
@@ -304,8 +308,8 @@ SIM$reset = function() {
 #' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
-#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' genetic_map_of_region = system.file("examples","chr4-geneticmap.txt", package = "sim1000G")
+#' readGeneticMapFromFile(genetic_map_of_region)
 #'
 #' startSimulation(vcf, totalNumberOfIndividuals = 1200)
 #' fam1 = newNuclearFamily(1)
@@ -402,7 +406,7 @@ newFamilyWithOffspring = function(family_id, noffspring = 2) {
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' generateUniformGeneticMap()
 #'
 #' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
@@ -488,7 +492,7 @@ newFamily3generations = function(familyid, noffspring2 = 2, noffspring3 = c(1,1)
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' generateUniformGeneticMap()
 #'
 #' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
@@ -547,7 +551,7 @@ computePairIBD12 = function(i,j) {
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' generateUniformGeneticMap()
 #'
 #' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
@@ -600,7 +604,7 @@ computePairIBD1 = function(i,j) {
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
-#' generateFakeGeneticMap()
+#' generateUniformGeneticMap()
 #'
 #' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
