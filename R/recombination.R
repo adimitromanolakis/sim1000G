@@ -241,6 +241,42 @@ generateUniformGeneticMap = function() {
 
 
 
+#' Generates a fake genetic map that spans the whole genome.
+#'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateFakeWholeGenomeGeneticMap(vcf)
+#' plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))
+#'
+#' @param vcf A vcf file read by function readVCF.
+#' @export
+generateFakeWholeGenomeGeneticMap = function(vcf) {
+
+    n = 10000
+    bp = vcf$vcf[,2]
+    cm = seq(0,4000, l=length(bp))
+
+    geneticMap$chr = rep(4, length(bp))
+    geneticMap$bp = bp
+    geneticMap$cm = cm
+
+    makeCDF();
+    0;
+
+}
+
+
+
+
+
+
 
 #' Converts centimorgan position to base-pair. Return a list of centimorgan positions that correspond
 #' to the bp vector (in basepairs).
@@ -291,12 +327,15 @@ plotRegionalGeneticMap = function(bp) {
     #bp = vcf[,2]
     cm = approx( geneticMap$bp, geneticMap$cm, bp )$y
 
+
+    len = diff(range(cm))
+    print(len)
+
     plot(bp/1e6,cm, t="l",cex=0.2, xlab="MBp", ylab = "Centimorgan")
-    segments( bp/1e6,cm,  bp/1e6,cm -0.2, lwd=0.3,col="blue")
+    segments( bp/1e6,cm,  bp/1e6,cm - len/10, lwd=0.3,col="blue")
 
 
 }
-
 
 
 

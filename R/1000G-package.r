@@ -18,6 +18,7 @@
 #' @import graphics
 #' @import stats
 #' @import utils
+#' @import readr
 
 NULL
 

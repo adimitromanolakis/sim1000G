@@ -35,7 +35,8 @@ SIM = new.env()
 #'
 #' @param vcf Input vcf file of a region (can be .gz). Must contain phased data.
 #' @param totalNumberOfIndividuals Maximum Number of individuals that will ever be generated
-#' @param randomdata If 1, disregards the genotypes in the vcf file and generates markers that are not in LD. Generally do not use.
+#' @param subset A subset of individual IDs to use for simulation
+#' @param randomdata If 1, disregards the genotypes in the vcf file and generates independent markers that are not in LD.
 #'
 #' @examples
 #' library("sim1000G")
@@ -56,21 +57,38 @@ SIM = new.env()
 #' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
 #' @export
-startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) {
+startSimulation = function(vcf, totalNumberOfIndividuals = 250, subset = NA, randomdata = 0) {
 
         cat("[#####...] Creating SIM object\n");
 
         # Original haplotypes from 1000 genomes / other data
 
-        SIM$population_gt1 = vcf$gt1
-        SIM$population_gt2 = vcf$gt2
+
+        if(class(subset) == "logical" ) {
+
+
+            SIM$population_gt1 = vcf$gt1
+            SIM$population_gt2 = vcf$gt2
+
+        } else {
+
+
+            s = which(vcf$individual_ids %in% subset)
+
+            SIM$population_gt1 = vcf$gt1[,s]
+            SIM$population_gt2 = vcf$gt2[,s]
+
+            cat("Using", ncol(SIM$population_gt1), " individuals in simulation\n")
+
+
+        }
 
 
 
         if(randomdata) {
 
-            str(SIM$population_gt1)
-            # indoviduals in columns
+            #str(SIM$population_gt1)
+            # individuals in columns
 
             x = SIM$population_gt1*0
 
@@ -89,10 +107,27 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) 
 
         # Generate haplodata object
 
-        dim( t( cbind(SIM$population_gt1, SIM$population_gt2) )  )
+        haplomatrix = t( cbind(SIM$population_gt1, SIM$population_gt2) )
+
+        #dim(haplomatrix)
+
+        meanv = apply(haplomatrix,2,mean)
+        #print( range(meanv) )
+
+        non_polymorphic = which( meanv == 0 | meanv == 1 )
+        polymorphic = which( meanv > 0  & meanv < 1 )
+
+        if(length(non_polymorphic) >  0 )  {
+            cat("Warning: Some variants are not polymorphic. (n=" , non_polymorphic , ")\n");
+        }
 
 
-        SIM$haplodata = haplodata(  t( cbind(SIM$population_gt1, SIM$population_gt2) ) )
+
+        SIM$non_polymorphic = non_polymorphic
+        SIM$polymorphic = polymorphic
+
+
+        SIM$haplodata = haplodata( haplomatrix[,polymorphic]  )
         cat("[#####...] Haplodata object created\n");
 
 
@@ -101,6 +136,13 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, randomdata = 0) 
 
         SIM$varinfo = vcf$vcf[,1:8]
         SIM$bp = vcf$vcf[,2]
+
+        if(length(ls(geneticMap) ) == 0) {
+            stop("ERROR: Genetic map has not been read yet\n");
+        }
+
+
+
         SIM$cm = approx( geneticMap$bp, geneticMap$cm, SIM$bp )$y
 
         SIM$N_markers = nrow(vcf$gt1)
@@ -138,9 +180,26 @@ SIM$generateNewHaplotypes = function(n = -1) {
         SIM$pool = haplosim2(SIM$npool, SIM$haplodata, summary = F)$data
 
 
+
+
+
     }
 
-    GT = list(gt1 =  SIM$pool[SIM$npool,], gt2 = SIM$pool[SIM$npool-1,] )
+    nvar = nrow(SIM$population_gt1)
+
+    gt1 = rep(0, nvar)
+    gt2 = rep(0, nvar)
+
+
+    gt1[SIM$polymorphic] = SIM$pool[SIM$npool,]
+    gt2[SIM$polymorphic] = SIM$pool[SIM$npool-1,]
+
+
+    GT = list(gt1 = gt1 , gt2 = gt2 )
+
+    #GT = list(gt1 =  SIM$pool[SIM$npool,],  gt2 = SIM$pool[SIM$npool-1,] )
+
+
     SIM$npool = SIM$npool - 2
 
     SIM$last_ancestral_index = SIM$last_ancestral_index  + 1
@@ -151,6 +210,14 @@ SIM$generateNewHaplotypes = function(n = -1) {
 
 
 SIM$addUnrelatedIndividual = function() {
+
+
+    #    e1 = environment()
+    #    print(parent.env(e1))
+    #    print(ls(  parent.env(e1)   ))
+
+
+
 
     newGenotypes = SIM$generateNewHaplotypes()
 
@@ -666,6 +733,26 @@ printMatrix = function(m) {
 
 
 
+
+#' Retrieve a matrix of simulated genotypes for a specific set of individual IDs
+#'
+#'
+#' @param ids Vector of ids of individuals to retrieve.
+#'
+#' @examples
+#'
+#' \dontrun{
+#' id1 = SIM$addUnrelatedIndividual()
+#' id2 = SIM$addUnrelatedIndividual()
+#'
+#' retrieveGenotypes( c(id1,id2) )
+#'
+#' }
+#' @export
+#'
+retrieveGenotypes = function(ids) {
+    SIM$gt1[id,] + SIM$gt2[id,]
+}
 
 
 

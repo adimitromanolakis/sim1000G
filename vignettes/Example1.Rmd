@@ -1,0 +1,181 @@
+---
+title: "sim1000G - example 1"
+author: "Apostolos Dimitromanolakis"
+editor_options: 
+  chunk_output_type: inline
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quickstart2}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+
+
+## Downloading necessary files
+
+
+1000 genomes vcf files are downloaded from:
+
+[http://hgdownload.cse.ucsc.edu/gbdb/hg19/1000Genomes/phase3/](http://hgdownload.cse.ucsc.edu/gbdb/hg19/1000Genomes/phase3/)
+
+
+Genetic map can be downloaded through sim1000G.
+
+
+## Selecting the target population (CEU)
+
+We extract the CEU samples from a region of chromosome 4 from 80MBp to 1000MBp using bcftools:
+
+
+```{r eval=FALSE}
+
+
+ped = read.table("20130606_g1k.ped",h=T,as=T,sep="\t")
+
+id = ped$Individual.ID [ ped$Population == "CEU" ]
+id2 = ped$Individual.ID [ ped$Population == "GBR" ]
+
+cat(c(id,id2),file="/tmp/samples1.txt",sep="\n")
+
+
+id = ped$Individual.ID [ ped$Population == "ASW" ]
+
+cat(c(id),file="/tmp/samples2.txt",sep="\n")
+
+
+```
+
+
+
+
+
+
+
+```{sh, eval=F}
+
+
+INPUT_VCF=ALL.chr4.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+
+bcftools view -S /tmp/samples1.txt -r 4:80000000-82000000 --force-samples $INPUT_VCF > ~/tmp/chr4-80.vcf
+
+bcftools  filter -i 'EUR_AF>0' < ~/tmp/chr4-80.vcf  | gzip > ~/tmp/chr4-80-filt.vcf.gz
+
+bcftools view -S /tmp/samples2.txt -r 4:80000000-82000000 --force-samples $INPUT_VCF > ~/tmp/chr4-80-p2.vcf
+
+bcftools  filter -i 'EUR_AF>0' < ~/tmp/chr4-80-p2.vcf  | gzip > ~/tmp/chr4-80-filt-p2.vcf.gz
+
+
+```
+ 
+
+```{R, echo=FALSE}
+library(sim1000G)
+
+vcf  = readVCF("~/fs/tmp/chr4-80-filt.vcf.gz",   maxNumberOfVariants = 500 , min_maf = 1e-6, max_maf = 0.32)
+#vcf2 = readVCF("~/fs/tmp/chr4-80-filt-p2.vcf.gz",maxNumberOfVariants = 500 , min_maf = 0.1, max_maf = 0.32)
+gplots::heatmap.2(cor(t( vcf$gt1+vcf$gt2))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
+#gplots::heatmap.2(cor(t(vcf2$gt1))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none")
+
+```
+
+
+```{R echo=FALSE}
+readGeneticMap(4)
+
+# startSimulation(vcf, totalNumberOfIndividuals = 200,subset=vcf$individual_ids[1:40])
+startSimulation(vcf, totalNumberOfIndividuals = 400)
+
+N = 200
+id = c()
+for(i in 1:N) id[i] = SIM$addUnrelatedIndividual()
+
+genotypes = retrieveGenotypes(id)
+
+gplots::heatmap.2(cor( genotypes )^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
+
+```
+
+
+
+```{R}
+
+
+startSimulation(vcf2, totalNumberOfIndividuals = 200)
+
+N = 70
+id = c()
+for(i in 1:N) id[i] = SIM$addUnrelatedIndividual()
+
+genotypes2 = retrieveGenotypes(id)
+
+#gplots::heatmap.2(cor( genotypes2  )^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none")
+
+
+```
+
+```{r}
+
+( apply(genotypes,1,mean,na.rm=T)/2  ) [ 1: 20 ] 
+( apply(genotypes2,1,mean,na.rm=T)/2  ) [ 1: 20 ] 
+
+genotypes[1,] == genotypes[2,]
+
+dim(genotypes)
+dim(genotypes2)
+
+gt = rbind(genotypes,genotypes2)
+
+gt = genotypes
+dim(gt)
+
+maf = apply(gt,2,mean,na.rm=T)/2
+maf[1:20]
+
+sum(maf==0)
+
+
+apply(gt,2,function(x) sum(is.na(x)))
+
+
+
+flip  = which(maf > 0.5)
+gt[,flip] = 2 - gt[,flip]
+
+
+dim(gt)
+
+
+effect_sizes = rep(0, ncol(gt))
+nvar = length(effect_sizes)
+
+s = sample(1:nvar, 33)
+effect_sizes[s] = 5
+
+
+apply(gt[,s],1,sum)
+
+
+
+
+predictor2 = function(b, geno) {
+    x = b[1] 
+    for(i in 1:ncol(geno)) { x = x  + b[i+1] * ( geno[,i] > 0) + b[i+1] * ( geno[,i] > 1)   }
+    exp(x) / (1+exp(x) )
+}
+
+p =predictor2 (  c(-1.5,effect_sizes) ,  gt)
+
+
+
+phenotype = rbinom( length(p) , 1 , p ) 
+
+#phenotype = sample(phenotype)
+obj<-SKAT_Null_Model(phenotype ~ 1, out_type="D")
+
+
+library(SKAT)
+SKATBinary((gt),obj)$p.value
+
+
+```

@@ -1,7 +1,7 @@
 Package: sim1000G
 Type: Package
 Title: Genotype Simulations for Rare or Common Variants Using Haplotypes from 1000 Genomes
-Version: 1.32
+Version: 1.33
 Date: 2017-09-05
 Author: Apostolos Dimitromanolakis <apostolis@live.ca>, 
     Jingxiong Xu <jingxiong.xu@mail.utoronto.ca>,
@@ -15,7 +15,8 @@ Depends:
     stats,
     hapsim,
     MASS,
-    stringr
+    stringr,
+    readr
 NeedsCompilation: no
 VignetteBuilder: knitr, prettydoc
 RoxygenNote: 5.0.1

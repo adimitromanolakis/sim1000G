@@ -50,6 +50,8 @@ cp /tmp/2.vcf ~/tmp
 #' @param maxNumberOfVariants Maximum number of variants to keep from region
 #' @param min_maf Minimum allele frequency of markers to keep
 #' @param max_maf Maximum allele frequency of markers to keep
+#' @param region_start Extract a region from a vcf files with this starting basepair position
+#' @param region_end Extract a region from a vcf files with this ending basepair position
 #'
 #' @return none
 #'
@@ -61,7 +63,10 @@ cp /tmp/2.vcf ~/tmp
 #` startSimulation(vcf, totalNumberOfIndividuals = 500)
 #'  }
 #' @export
-readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA) {
+readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA,
+                   region_start = NA,
+                   region_end = NA
+                   ) {
 
 
     if(  grepl(".rdata", filename) ) {
@@ -87,11 +92,21 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
 
 
 
-    vcf = read.table(filename, sep="\t", comment.char="", as.is=T, header=T)
+    # vcf = read.table(filename, sep="\t", comment.char="", as.is=T, header=T)
+
+    vcf = read_delim(filename, "\t", comment = "##", progress = FALSE)
+    vcf = as.data.frame(vcf)
+
+
 
 
     # Keep bi-allelic markers only
     vcf = vcf[str_length(vcf[,5]) == 1 ,]
+
+
+    if( !is.na( region_start ) ) vcf = vcf[ vcf[,2] >= region_start  , ]
+    if( !is.na( region_end   ) ) vcf = vcf[ vcf[,2] <= region_end    , ]
+
 
 
     # Reduce number of variants
@@ -107,10 +122,12 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
         "\n");
 
 
+    individual_ids = colnames(vcf)[-(1:9)]
     gt = vcf[,-(1:9) ]
 
     gt1 = apply( gt, 2,  function(x) as.numeric( str_sub(x,1,1) )  )
     gt2 = apply( gt, 2,  function(x) as.numeric( str_sub(x,3,3) )  )
+
 
 
     #### --- Filter by MAF ---- ####
@@ -138,6 +155,10 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
     gt = gt[s,]
     vcf = vcf[s,]
 
+
+    cat("Add code to flip genotypes if maf > 0.5???????????\n")
+
+
     #
 
 
@@ -155,6 +176,7 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
     R$vcf = vcf
     R$gt1 = gt1
     R$gt2 = gt2
+    R$individual_ids = individual_ids
     # R$gt = gt
 
     R
