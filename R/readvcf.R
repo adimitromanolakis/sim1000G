@@ -135,17 +135,17 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
 
     cat("[###.....] Filtering and thinning variants\n");
 
-    maf = apply(gt1,1,function(x) mean(x,na.rm=T))
-    maf[maf>0.5] = 1 - maf[maf>0.5]
+    maf = apply(gt1+gt2,1,function(x) mean(x,na.rm=T)/2)
+    #maf[maf>0.5] = 1 - maf[maf>0.5]
 
 
-    maf2 = apply(gt2,1,function(x) mean(x,na.rm=T))
-    maf2[maf2>0.5] = 1 - maf2[maf2>0.5]
+    #maf2 = apply(gt2,1,function(x) mean(x,na.rm=T))
+    #maf2[maf2>0.5] = 1 - maf2[maf2>0.5]
 
     ok = apply(gt1,1,function(x) max(x,na.rm=T))
-    s = which(maf > min_maf & maf2 > min_maf & ok < 2)
+    s = which(maf > min_maf & ok < 2)
 
-    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf & maf2 <= max_maf & ok < 2) ) }
+    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf  & ok < 2) ) }
 
     if(length(s)>maxNumberOfVariants) s = sort( sample(s,maxNumberOfVariants) )
 
@@ -156,10 +156,7 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
     vcf = vcf[s,]
 
 
-    cat("Add code to flip genotypes if maf > 0.5???????????\n")
-
-
-    #
+    # cat("Add code to flip genotypes if maf > 0.5???????????\n")
 
 
     cat("[##......] Chromosome:  ", unique(vcf[,1]),

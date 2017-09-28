@@ -9,4 +9,5 @@ include-filelist.txt
 examples/genetic_map_GRCh37_chr4.txt.gz
 examples/Rplots.pdf
 genetic_map_GRCh37_chr4.txt.gz
+./vignettes/rsconnect
 

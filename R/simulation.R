@@ -69,6 +69,7 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, subset = NA, ran
 
             SIM$population_gt1 = vcf$gt1
             SIM$population_gt2 = vcf$gt2
+            SIM$individual_ids = vcf$individual_ids
 
         } else {
 
@@ -77,6 +78,7 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, subset = NA, ran
 
             SIM$population_gt1 = vcf$gt1[,s]
             SIM$population_gt2 = vcf$gt2[,s]
+            SIM$individual_ids = vcf$individual_ids[s]
 
             cat("Using", ncol(SIM$population_gt1), " individuals in simulation\n")
 
@@ -741,17 +743,96 @@ printMatrix = function(m) {
 #'
 #' @examples
 #'
-#' \dontrun{
-#' id1 = SIM$addUnrelatedIndividual()
-#' id2 = SIM$addUnrelatedIndividual()
+#' library("sim1000G")
 #'
-#' retrieveGenotypes( c(id1,id2) )
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
-#' }
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateUniformGeneticMap()
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 200)
+#'
+#' ped1 = newNuclearFamily(1)
+#'
+#' retrieveGenotypes(ped1$gtindex)
+#'
 #' @export
 #'
 retrieveGenotypes = function(ids) {
-    SIM$gt1[id,] + SIM$gt2[id,]
+    m = SIM$gt1[id,] + SIM$gt2[id,]
+
+    rownames(m) = ids
+
+    m
+
+}
+
+
+
+
+saved_SIM = new.env()
+
+
+#' Save the data for a simulation for later use. When simulating multiple populations it
+#' allows saving and restoring of simulation data for each population.
+#'
+#' @param id Name the simulation will be saved as.
+#'
+#' @examples
+#'
+#' saveSimulation("sim1")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' # For realistic data use the functions downloadGeneticMap / readGeneticMap
+#' generateUniformGeneticMap()
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 200)
+#'
+#' ped1 = newNuclearFamily(1)
+#'
+#' loadSimulation("sim1")
+#'
+#' @export
+#'
+saveSimulation = function(id) {
+    saved_SIM[[id]] = as.list(SIM)
+    SIM = new.env()
+
+
+}
+
+
+
+
+
+
+
+#' Load some previously saved simulation data by function saveSimulation
+#'
+#' @param id Name the simulation to load which was previously saved by saveSimulation
+#'
+#' @examples
+#'
+#' \dontrun{
+#'
+#' saveSimulation("sim1")
+#'
+#'
+#'
+#' @export
+#'
+loadSimulation = function(id) {
+    x = (saved_SIM[[id]])
+
+    for(i in names(x)) SIM[[i]] = x[[i]]
+
+    cat("N=" , length(SIM$individual_ids), " individuals in simulation.\n")
+
 }
 
 
