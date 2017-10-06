@@ -233,7 +233,7 @@ SIM$addUnrelatedIndividual = function() {
     SIM$individuals_generated = SIM$individuals_generated + 1
     j = SIM$individuals_generated
 
-    cat("Adding individual ",j, " from pool\n");
+    # cat("Adding individual ",j, " from pool\n");
 
 
     SIM$gt1[j,] = newGenotypes$gt1
@@ -761,7 +761,7 @@ printMatrix = function(m) {
 #' @export
 #'
 retrieveGenotypes = function(ids) {
-    m = SIM$gt1[id,] + SIM$gt2[id,]
+    m = SIM$gt1[ids,] + SIM$gt2[ids,]
 
     rownames(m) = ids
 
@@ -782,7 +782,7 @@ saved_SIM = new.env()
 #'
 #' @examples
 #'
-#' saveSimulation("sim1")
+#'
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
 #' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
@@ -795,7 +795,7 @@ saved_SIM = new.env()
 #'
 #' ped1 = newNuclearFamily(1)
 #'
-#' loadSimulation("sim1")
+#' saveSimulation("sim1")
 #'
 #' @export
 #'
@@ -820,9 +820,9 @@ saveSimulation = function(id) {
 #'
 #' \dontrun{
 #'
-#' saveSimulation("sim1")
+#' loadSimulation("sim1")
 #'
-#'
+#' }
 #'
 #' @export
 #'

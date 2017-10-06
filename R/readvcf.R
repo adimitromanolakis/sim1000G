@@ -48,12 +48,12 @@ cp /tmp/2.vcf ~/tmp
 #' @param filename Input VCF file
 #' @param thin How much to thin markers
 #' @param maxNumberOfVariants Maximum number of variants to keep from region
-#' @param min_maf Minimum allele frequency of markers to keep
-#' @param max_maf Maximum allele frequency of markers to keep
+#' @param min_maf Minimum allele frequency of markers to keep. If NA skip min_maf filtering.
+#' @param max_maf Maximum allele frequency of markers to keep. If NA skip max_maf filtering.
 #' @param region_start Extract a region from a vcf files with this starting basepair position
 #' @param region_end Extract a region from a vcf files with this ending basepair position
 #'
-#' @return none
+#' @return VCF object to be used by startSimulation function.
 #'
 #' @examples
 #'  \dontrun{
@@ -63,7 +63,7 @@ cp /tmp/2.vcf ~/tmp
 #` startSimulation(vcf, totalNumberOfIndividuals = 500)
 #'  }
 #' @export
-readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA,
+readVCF = function(filename = "data.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA,
                    region_start = NA,
                    region_end = NA
                    ) {
@@ -111,7 +111,7 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
 
     # Reduce number of variants
     if(thin > 0)
-    vcf = vcf[seq(1,nrow(vcf),by = thin) ,]
+        vcf = vcf[seq(1,nrow(vcf),by = thin) ,]
 
 
     cat("[##......] Chromosome:  ", unique(vcf[,1]),
@@ -124,6 +124,8 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
 
     individual_ids = colnames(vcf)[-(1:9)]
     gt = vcf[,-(1:9) ]
+    vcf = vcf[,1:9]
+
 
     gt1 = apply( gt, 2,  function(x) as.numeric( str_sub(x,1,1) )  )
     gt2 = apply( gt, 2,  function(x) as.numeric( str_sub(x,3,3) )  )
@@ -136,27 +138,35 @@ readVCF = function(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants =
     cat("[###.....] Filtering and thinning variants\n");
 
     maf = apply(gt1+gt2,1,function(x) mean(x,na.rm=T)/2)
+
+
     #maf[maf>0.5] = 1 - maf[maf>0.5]
-
-
     #maf2 = apply(gt2,1,function(x) mean(x,na.rm=T))
     #maf2[maf2>0.5] = 1 - maf2[maf2>0.5]
 
     ok = apply(gt1,1,function(x) max(x,na.rm=T))
-    s = which(maf > min_maf & ok < 2)
+    s = which(ok < 2)
 
-    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf  & ok < 2) ) }
 
-    if(length(s)>maxNumberOfVariants) s = sort( sample(s,maxNumberOfVariants) )
+    if( ! is.na(min_maf) ) {  s = intersect( s  ,   which(maf >= min_maf ) ) }
+
+    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf ) ) }
+
+    if(length(s) > maxNumberOfVariants) s = sort( sample(s,maxNumberOfVariants) )
+
+
 
 
     gt1 = gt1[s,]
     gt2 = gt2[s,]
     gt = gt[s,]
     vcf = vcf[s,]
+    maf = maf[s]
 
 
-    # cat("Add code to flip genotypes if maf > 0.5???????????\n")
+
+
+    # cat("Q: flip genotypes if maf > 0.5???????????\n")
 
 
     cat("[##......] Chromosome:  ", unique(vcf[,1]),
