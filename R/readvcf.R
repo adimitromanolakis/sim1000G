@@ -63,10 +63,15 @@ cp /tmp/2.vcf ~/tmp
 #` startSimulation(vcf, totalNumberOfIndividuals = 500)
 #'  }
 #' @export
-readVCF = function(filename = "data.vcf", thin = 1, maxNumberOfVariants = 400, min_maf = 0.02, max_maf = NA,
+readVCF = function(filename = "data.vcf",
+                   thin = NA,
+                   maxNumberOfVariants = 400,
+                   min_maf = 0.02,
+                   max_maf = NA,
                    region_start = NA,
                    region_end = NA
-                   ) {
+                   )
+{
 
 
     if(  grepl(".rdata", filename) ) {
@@ -100,6 +105,8 @@ readVCF = function(filename = "data.vcf", thin = 1, maxNumberOfVariants = 400, m
 
 
 
+
+
     # Keep bi-allelic markers only
     vcf = vcf[str_length(vcf[,5]) == 1 ,]
 
@@ -107,10 +114,14 @@ readVCF = function(filename = "data.vcf", thin = 1, maxNumberOfVariants = 400, m
     if( !is.na( region_start ) ) vcf = vcf[ vcf[,2] >= region_start  , ]
     if( !is.na( region_end   ) ) vcf = vcf[ vcf[,2] <= region_end    , ]
 
+    if( nrow(vcf) < 10 ) {
+         cat("Too few variants in VCF file\n");
+         return(NA);
+    }
 
 
     # Reduce number of variants
-    if(thin > 0)
+    if( !is.na(thin) )
         vcf = vcf[seq(1,nrow(vcf),by = thin) ,]
 
 
@@ -148,9 +159,9 @@ readVCF = function(filename = "data.vcf", thin = 1, maxNumberOfVariants = 400, m
     s = which(ok < 2)
 
 
-    if( ! is.na(min_maf) ) {  s = intersect( s  ,   which(maf >= min_maf ) ) }
+    if( ! is.na(min_maf) ) {  s = intersect( s  ,   which(maf >= min_maf & maf <= 1 - min_maf ) ) }
 
-    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf ) ) }
+    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf | maf >= 1 - max_maf) ) }
 
     if(length(s) > maxNumberOfVariants) s = sort( sample(s,maxNumberOfVariants) )
 
@@ -184,6 +195,7 @@ readVCF = function(filename = "data.vcf", thin = 1, maxNumberOfVariants = 400, m
     R$gt1 = gt1
     R$gt2 = gt2
     R$individual_ids = individual_ids
+    R$maf = maf
     # R$gt = gt
 
     R

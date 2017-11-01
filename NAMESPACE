@@ -27,6 +27,8 @@ export(retrieveGenotypes)
 export(saveSimulation)
 export(startSimulation)
 export(writePED)
+export(generateUnrelatedIndividuals)
+
 import(MASS)
 import(graphics)
 import(hapsim)

@@ -175,14 +175,14 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, subset = NA, ran
 SIM$generateNewHaplotypes = function(n = -1) {
 
     if(SIM$npool < 2) {
-        cat("Generate new individual pool n=200\n");
+        cat("Generate new haplotype pool n=500\n");
 
 
         SIM$npool = 500
         SIM$pool = haplosim2(SIM$npool, SIM$haplodata, summary = F)$data
 
-
-
+        s = sample(1: SIM$npool, SIM$npool)
+        #SIM$pool = SIM$pool[s,]
 
 
     }
@@ -341,8 +341,39 @@ SIM$reset = function() {
 }
 
 
+#' Generates variant data for n unrelated individuals
+#'
+#'
+#'
+#' @param N how many individuals to generate
+#'
+#' @return IDs of the generated individuals
+#'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+#'
+#' genetic_map_of_region = system.file("examples","chr4-geneticmap.txt", package = "sim1000G")
+#' readGeneticMapFromFile(genetic_map_of_region)
+#'
+#' startSimulation(vcf, totalNumberOfIndividuals = 1200)
+#' ids = generateUnrelatedIndividuals(20)
+#'
+#' # See also the documentation on our github page
+#'
+#' @export
+generateUnrelatedIndividuals = function(N=1) {
+
+    id = c()
+    for(i in 1:N) id[i] = SIM$addUnrelatedIndividual()
 
 
+    id
+}
 
 
 
@@ -831,7 +862,7 @@ loadSimulation = function(id) {
 
     for(i in names(x)) SIM[[i]] = x[[i]]
 
-    cat("N=" , length(SIM$individual_ids), " individuals in simulation.\n")
+    cat(" N=" , length(SIM$individual_ids), " individuals in origin simulation pool.\n")
 
 }
 
