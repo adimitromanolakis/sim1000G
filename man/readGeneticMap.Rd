@@ -18,4 +18,14 @@ will be simulated.
 \details{
 The file can be downloaded from the provided genetic maps by using the function downloadGeneticMap.
 }
+\examples{
+
+\dontrun{
+
+downloadGeneticMap(22)
+readGeneticMap(22)
+
+}
+
+}
 

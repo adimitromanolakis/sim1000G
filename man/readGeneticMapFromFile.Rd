@@ -2,7 +2,9 @@
 % Please edit documentation in R/recombination.R
 \name{readGeneticMapFromFile}
 \alias{readGeneticMapFromFile}
-\title{Reads a genetic map to be used for simulations.}
+\title{Reads a genetic map to be used for simulations. The genetic map should be
+of a single chromosome and covering the extent of the region to be simulated.
+Whole chromosome genetic maps can also be used.}
 \usage{
 readGeneticMapFromFile(filelocation)
 }
@@ -10,6 +12,15 @@ readGeneticMapFromFile(filelocation)
 \item{filelocation}{Filename containing the genetic map}
 }
 \description{
-The file must be contain the following columns in order: chromosome, basepaire, rate(not used), centimorgan
+The file must be contain the following columns in the same order: chromosome, basepaire, rate(not used), centimorgan
+}
+\examples{
+
+\dontrun{
+
+
+readGeneticMapFromFile("genetic_map_GRCh37_chr4.txt.gz")
+
+}
 }
 

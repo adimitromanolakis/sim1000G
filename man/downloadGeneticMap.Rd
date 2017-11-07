@@ -12,4 +12,12 @@ downloadGeneticMap(chromosome)
 \description{
 Downloads a genetic map for a particular chromosome under GRCh37 coordinates for use with sim1000G.
 }
+\examples{
+
+\dontrun{
+
+downloadGeneticMap(22)
+
+}
+}
 

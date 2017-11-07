@@ -15,4 +15,10 @@ recombination distances in centimorgan
 \description{
 Generate recombination distances using a no-interference model.
 }
+\examples{
+
+library("sim1000G")
+mean ( generateRecombinationDistances_noInterference ( 200 ) )
+
+}
 

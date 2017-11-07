@@ -7,7 +7,16 @@
 plotRegionalGeneticMap(bp)
 }
 \arguments{
-\item{bp}{Vector of base-pair positions to generate a plot for}
+\item{bp}{Vector of base-pair positions to generate a plot for
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the functions downloadGeneticMap / readGeneticMap
+generateUniformGeneticMap()
+plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))}
 }
 \description{
 The plot shows the centimorgan vs base-pair positions.

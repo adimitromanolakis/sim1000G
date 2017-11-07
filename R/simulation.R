@@ -37,6 +37,7 @@ SIM = new.env()
 #' @param totalNumberOfIndividuals Maximum Number of individuals that will ever be generated
 #' @param subset A subset of individual IDs to use for simulation
 #' @param randomdata If 1, disregards the genotypes in the vcf file and generates independent markers that are not in LD.
+#' @param typeOfGeneticMap Specify whether to download a genetic map for this chromosome
 #'
 #' @examples
 #' library("sim1000G")
@@ -57,7 +58,10 @@ SIM = new.env()
 #' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
 #' @export
-startSimulation = function(vcf, totalNumberOfIndividuals = 250, subset = NA, randomdata = 0) {
+startSimulation = function(vcf, totalNumberOfIndividuals = 250,
+                           subset = NA, randomdata = 0,
+                           typeOfGeneticMap = "download"
+                           ) {
 
         cat("[#####...] Creating SIM object\n");
 
@@ -140,7 +144,13 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, subset = NA, ran
         SIM$bp = vcf$vcf[,2]
 
         if(length(ls(geneticMap) ) == 0) {
-            stop("ERROR: Genetic map has not been read yet\n");
+
+            cat("Downloading genetic map for chromosome " , vcf$vcf[1,1],"\n" )
+
+            readGeneticMap(vcf$vcf[1,1])
+
+
+            #stop("ERROR: Genetic map has not been read yet\n");
         }
 
 
@@ -172,17 +182,25 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 250, subset = NA, ran
 
 
 
+
+SIM$refreshPool = function() {
+
+    SIM$npool = 500
+    SIM$pool = haplosim2(SIM$npool, SIM$haplodata, summary = F)$data
+
+    s = sample(1: SIM$npool, SIM$npool)
+    #SIM$pool = SIM$pool[s,]
+
+}
+
+
 SIM$generateNewHaplotypes = function(n = -1) {
 
     if(SIM$npool < 2) {
-        cat("Generate new haplotype pool n=500\n");
 
+        cat("Generate new haplotype pool..\n");
 
-        SIM$npool = 500
-        SIM$pool = haplosim2(SIM$npool, SIM$haplodata, summary = F)$data
-
-        s = sample(1: SIM$npool, SIM$npool)
-        #SIM$pool = SIM$pool[s,]
+        SIM$refreshPool()
 
 
     }
@@ -225,7 +243,7 @@ SIM$addUnrelatedIndividual = function() {
 
     if(SIM$individuals_generated >= SIM$total_individuals) {
 
-        stop("No more space for saving new individual genotypes")
+        stop("No more space for saving new individual genotypes. You can increase the parameter maxNumberOfIndividuals when calling function startSimulation.")
 
     }
 
@@ -858,11 +876,16 @@ saveSimulation = function(id) {
 #' @export
 #'
 loadSimulation = function(id) {
+
+    print(names(saved_SIM))
+
     x = (saved_SIM[[id]])
 
     for(i in names(x)) SIM[[i]] = x[[i]]
 
     cat(" N=" , length(SIM$individual_ids), " individuals in origin simulation pool.\n")
+
+    SIM$npool = 0
 
 }
 

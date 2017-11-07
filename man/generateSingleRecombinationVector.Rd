@@ -14,4 +14,17 @@ generateSingleRecombinationVector(cm)
 Genetates a recombination vector arising from one meiotic event.
 The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )
 }
+\examples{
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("\%s/region.vcf.gz", examples_dir)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the functions downloadGeneticMap / readGeneticMap
+generateUniformGeneticMap()
+generateSingleRecombinationVector( 1:100 )
+
+}
 

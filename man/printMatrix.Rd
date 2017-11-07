@@ -12,4 +12,8 @@ printMatrix(m)
 \description{
 Utility function that prints a matrix. Useful for IBD12 matrices.
 }
+\examples{
+
+printMatrix (  matrix(runif(16), nrow=4) )
+}
 

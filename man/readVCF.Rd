@@ -4,8 +4,8 @@
 \alias{readVCF}
 \title{Read a vcf file, with options to filter out low or high frequency markers.}
 \usage{
-readVCF(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400,
-  min_maf = 0.02, max_maf = NA)
+readVCF(filename = "data.vcf", thin = 1, maxNumberOfVariants = 400,
+  min_maf = 0.02, max_maf = NA, region_start = NA, region_end = NA)
 }
 \arguments{
 \item{filename}{Input VCF file}
@@ -14,12 +14,16 @@ readVCF(filename = "haplosims/1.vcf", thin = 1, maxNumberOfVariants = 400,
 
 \item{maxNumberOfVariants}{Maximum number of variants to keep from region}
 
-\item{min_maf}{Minimum allele frequency of markers to keep}
+\item{min_maf}{Minimum allele frequency of markers to keep. If NA skip min_maf filtering.}
 
-\item{max_maf}{Maximum allele frequency of markers to keep}
+\item{max_maf}{Maximum allele frequency of markers to keep. If NA skip max_maf filtering.}
+
+\item{region_start}{Extract a region from a vcf files with this starting basepair position}
+
+\item{region_end}{Extract a region from a vcf files with this ending basepair position}
 }
 \value{
-none
+VCF object to be used by startSimulation function.
 }
 \description{
 Read a vcf file, with options to filter out low or high frequency markers.

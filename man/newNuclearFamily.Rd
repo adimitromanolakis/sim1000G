@@ -23,8 +23,8 @@ examples_dir = system.file("examples", package = "sim1000G")
 vcf_file = sprintf("\%s/region.vcf.gz", examples_dir)
 vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 
-# For realistic data use the functions downloadGeneticMap / readGeneticMap
-generateFakeGeneticMap()
+genetic_map_of_region = system.file("examples","chr4-geneticmap.txt", package = "sim1000G")
+readGeneticMapFromFile(genetic_map_of_region)
 
 startSimulation(vcf, totalNumberOfIndividuals = 1200)
 fam1 = newNuclearFamily(1)

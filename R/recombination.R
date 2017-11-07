@@ -93,17 +93,18 @@ geneticMap <- new.env()
 #' Downloads a genetic map for a particular chromosome under GRCh37 coordinates for use with sim1000G.
 #'
 #' @param chromosome Chromosome number to download recombination distances from.
+#' @param dir Directory to save the genetic map to (default: extdata)
 #'
 #'
 #' @examples
 #'
-#' \dontrun{
+#'
 #'
 #' downloadGeneticMap(22)
 #'
-#' }
+#'
 #' @export
-downloadGeneticMap = function(chromosome) {
+downloadGeneticMap = function(chromosome, dir = NA) {
 
 
         fname = sprintf("genetic_map_GRCh37_chr%s.txt.gz" , chromosome )
@@ -113,21 +114,35 @@ downloadGeneticMap = function(chromosome) {
             chromosome
         )
 
-        dest_dir = system.file("data", fname, package = "sim1000G")
-        dest_dir = "."
+        # dest_dir = system.file("extdata", fname, package = "sim1000G")
 
-        cat("Downloading genetic map\n")
-        dest_dir = system.file("data", package = "sim1000G")
 
-        dest_dir = "./"
-        dest_path = sprintf("%s/genetic_map_GRCh37_chr%s.txt.gz", dest_dir, chromosome)
+
+        if(is.na(dir)) {
+            dest_dir = system.file("extdata", package = "sim1000G")
+        } else {
+            dest_dir = dir
+        }
+
+        #dest_dir = "./"
+        dest_path = file.path(dest_dir, fname)
+
+
+        if(file.exists(dest_path)) {
+            # cat("Already downloaded");
+            return(dest_path)
+
+        }
+
+        cat("Downloading genetic map from:",url,"\n")
         cat(" -> Saving genetic map to: " , dest_path,"\n")
         #file.exists(dest_path)
 
         download.file(url  ,  destfile = dest_path, quiet=TRUE)
-
+        return(dest_path)
 
 }
+
 
 
 
@@ -147,18 +162,22 @@ downloadGeneticMap = function(chromosome) {
 #'
 #' @examples
 #'
-#' \dontrun{
 #'
-#' downloadGeneticMap(22)
-#' readGeneticMap(22)
 #'
-#' }
+#'
+#' readGeneticMap(chromosome = 22)
+#'
+#'
 #'
 #' @export
-readGeneticMap = function(chromosome, dir=".") {
+readGeneticMap = function(chromosome, dir=NA) {
 
-    filelocation = sprintf( "%s/genetic_map_GRCh37_chr%s.txt.gz", dir, as.character( chromosome) )
-    readGeneticMapFromFile(filelocation)
+    #if(is.na(dir)) dir = system.file("extdata", package = "sim1000G")
+
+    fname =   downloadGeneticMap( chromosome ,dir=dir)
+
+
+    readGeneticMapFromFile(fname)
 
 }
 
@@ -200,15 +219,14 @@ readGeneticMapFromFile = function(filelocation) {
     cat("      -> Genetic map has" , length(geneticMap$bp), "entries\n");
 
     makeCDF()
-    0
 }
 
 
 
-#' Generates a fake genetic map.
+#' Generates a uniform genetic map.
 #'
 #'
-#' Generates a fake genetic map by approximating 1 cm / Mbp. Only used for examples.
+#' Generates a uniform genetic map by approximating 1 cm / Mbp. Only used for examples.
 #'
 #'
 #' @examples
