@@ -3,46 +3,40 @@
 library("sim1000G")
 library(gplots)
 
-downloadGeneticMap( chromosome  = 4)
-readGeneticMap( chromosome = 4)
+vcf_file_name = "~/fs/tmp/CEU-TSI-ASW-region-chr4-93-TMEM156.vcf.gz"
+
+maxNumberOfVariants = 300
+min_maf = 0.02
+max_maf = 0.2
+
+vcf = readVCF(vcf_file_name,
+              maxNumberOfVariants = maxNumberOfVariants ,
+              min_maf = min_maf ,
+              max_maf = max_maf)
+
+startSimulation(vcf)
 
 
-initializeSimulation  = function(vcf_file_name = NA,
-                                 min_maf = 1e-10,
-                                 max_maf = 0.02,
-                                 maxNumberOfVariants = 300,
-                                 maxNumberOfIndividuals = 2000)
-{
+ids = generateUnrelatedIndividuals(150)
+genotypes = retrieveGenotypes(ids)
 
 
-    vcf = readVCF(vcf_file_name,
-                  maxNumberOfVariants = maxNumberOfVariants ,
-                  min_maf = min_maf ,
-                  max_maf = max_maf)
-
-    vcf <<- vcf
-
-    startSimulation(vcf, totalNumberOfIndividuals = maxNumberOfIndividuals)
 
 
-}
+#### Generate multiple datasets ####
 
-simulatePopulation = function(num_individuals = 300)
+datasets = list()
 
-{
-    ids = generateUnrelatedIndividuals(num_individuals)
+for(i in 1:50) {
+
+    SIM$reset()
+
+    ids = generateUnrelatedIndividuals(150)
     genotypes = retrieveGenotypes(ids)
+
+    datasets[[i]] = genotypes
+
 }
-
-
-
-
-
-
-vcf_file = "region-chr4-93-TMEM156.vcf.gz"
-initializeSimulation(vcf_file,min_maf=1e-10, max_maf=0.03)
-genotypes = simulatePopulation(100)
-
 
 
 
@@ -56,7 +50,7 @@ examineMAFandLD = function() {
     SIM$reset()
 
 
-    ids = generateUnrelatedIndividuals(500)
+    ids = generateUnrelatedIndividuals(1500)
     genotypes = retrieveGenotypes(ids)
 
 
@@ -78,8 +72,10 @@ examineMAFandLD = function() {
     plot(maf1,maf2)
 
 
-    n = nrow(ld_simulated_data)
-    ld_simulated_data [ lower.tri(ld_simulated_data)  ] = ld_population[ lower.tri(ld_population) ]
+
+
+    # n = nrow(ld_simulated_data)
+    # ld_simulated_data [ lower.tri(ld_simulated_data)  ] = ld_population[ lower.tri(ld_population) ]
 
 
 }

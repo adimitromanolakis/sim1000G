@@ -4,7 +4,7 @@
 \name{SIM}
 \alias{SIM}
 \title{Holds data necessary for a simulation.}
-\format{An object of class \code{environment} of length 5.}
+\format{An object of class \code{environment} of length 6.}
 \usage{
 SIM
 }

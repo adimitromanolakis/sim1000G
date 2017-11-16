@@ -4,7 +4,7 @@
 \alias{readGeneticMap}
 \title{Reads a genetic map downloaded from the function downloadGeneticMap.}
 \usage{
-readGeneticMap(chromosome, dir = ".")
+readGeneticMap(chromosome, dir = NA)
 }
 \arguments{
 \item{chromosome}{Chromosome number to download recombination distances from.}
@@ -20,12 +20,12 @@ The file can be downloaded from the provided genetic maps by using the function 
 }
 \examples{
 
-\dontrun{
 
-downloadGeneticMap(22)
-readGeneticMap(22)
 
-}
+
+readGeneticMap(chromosome = 22)
+
+
 
 }
 

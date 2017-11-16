@@ -58,7 +58,7 @@ SIM = new.env()
 #' startSimulation(vcf, totalNumberOfIndividuals = 200)
 #'
 #' @export
-startSimulation = function(vcf, totalNumberOfIndividuals = 250,
+startSimulation = function(vcf, totalNumberOfIndividuals = 2000,
                            subset = NA, randomdata = 0,
                            typeOfGeneticMap = "download"
                            ) {
@@ -198,7 +198,7 @@ SIM$generateNewHaplotypes = function(n = -1) {
 
     if(SIM$npool < 2) {
 
-        cat("Generate new haplotype pool..\n");
+       # cat("Generate new haplotype pool..\n");
 
         SIM$refreshPool()
 
@@ -243,7 +243,7 @@ SIM$addUnrelatedIndividual = function() {
 
     if(SIM$individuals_generated >= SIM$total_individuals) {
 
-        stop("No more space for saving new individual genotypes. You can increase the parameter maxNumberOfIndividuals when calling function startSimulation.")
+        stop("No more space for saving new individual genotypes. You can increase the parameter maximumNumberOfIndividuals when calling function startSimulation.")
 
     }
 
@@ -269,7 +269,7 @@ SIM$addIndividualFromGenotypes = function(gt1,gt2) {
 
     if(SIM$individuals_generated >= SIM$total_individuals) {
 
-        stop("No more space for generating new individual genotypes")
+        stop("No more space for saving new individual genotypes. You can increase the parameter maximumNumberOfIndividuals when calling function startSimulation.")
 
     }
 

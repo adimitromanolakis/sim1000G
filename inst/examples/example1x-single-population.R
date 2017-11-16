@@ -124,27 +124,49 @@ examineMAFandLD = function() {
 
 
 
-vcf_file = "~/fs/tmp/data-chr4/region-chr4-93-TMEM156.vcf.gz"
-vcf_file = "~/fs/tmp/CEU-TSI-GBR-region-chr4-34-ABLIM2.vcf.gz"
+vcf_file = "~/fs/tmp/CEU-TSI-GBR/CEU-TSI-GBR-region-chr4-93-TMEM156.vcf.gz"
+#vcf_file = "~/fs/tmp/CEU-TSI-GBR-region-chr4-34-ABLIM2.vcf.gz"
 
-initializeSimulation(vcf_file,min_maf=1e-10, max_maf=0.03)
+initializeSimulation(vcf_file,maxNumberOfVariants = 1000, min_maf=1e-10, max_maf=0.02)
 genotypes = simulatePopulation(100)
 
 
+v1 = subsetVCF(vcf,vcf$varid[1:10])
+str(as.list(v1))
+
+
+
+
+
+
+
+
+# vcf = readVCF("~/fs/tmp/ASW-region-chr4-93-TMEM156.vcf.gz" , maxNumberOfVariants = 5000, min_maf =  1e-6, max_maf = 0.02)
+vcf1 = readVCF("~/fs/tmp/CEU-TSI-GBR/CEU-TSI-GBR-region-chr4-205-MAML3.vcf.gz",
+               maxNumberOfVariants = 5000,  min_maf =  1e-6, max_maf = 0.02)
+
+
+vcf2 = readVCF("~/fs/tmp/AFR/ASW-LWK-YRI-region-chr4-205-MAML3.vcf.gz",
+               maxNumberOfVariants = 5000,  min_maf = 1e-6, max_maf = 0.05)
+
+common = intersect(vcf1$varid,vcf2$varid)
+
+vcf1 = subsetVCF(vcf1, common)
+vcf2 = subsetVCF(vcf2, common)
+
+table(vcf1$varid == vcf2$varid)
+
+
+plot(vcf1$maf,vcf2$maf)
 # for(i in 1:100) {genotypes = simulatePopulation(100) }
 
 
+startSimulation(vcf1, totalNumberOfIndividuals = 2000)
+saveSimulation("pop1")
 
-z = vcf$vcf
-str(z)
-str(z[,5])
-varid = paste(z[,1],z[,2],z[,3],z[,4],z[,5] )
+startSimulation(vcf2, totalNumberOfIndividuals = 2000)
+saveSimulation("pop2")
 
-
-
-
-save(vcf,file="/tmp/1.rdata")
-vcf = readVCF("/tmp/1.rdata")
 
 
 

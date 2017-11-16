@@ -105,10 +105,11 @@ readVCF = function(filename = "data.vcf",
 
 
 
-
-
     # Keep bi-allelic markers only
-    vcf = vcf[str_length(vcf[,5]) == 1 ,]
+    #vcf = vcf[str_length(vcf[,5]) == 1 ,]
+    vcf = vcf[ !grepl(",",vcf[,5]) ,]
+
+
 
 
     if( !is.na( region_start ) ) vcf = vcf[ vcf[,2] >= region_start  , ]
@@ -128,6 +129,11 @@ readVCF = function(filename = "data.vcf",
     cat("[##......] Chromosome:  ", unique(vcf[,1]),
         " Mbp: " , min(vcf[,2])/1e6,
         " Region Size: ", 1e-3 * ( max(vcf[,2])-min(vcf[,2]) ) ,"kb ",
+        "Num of individuals:", ncol(vcf)-9,
+        "\n");
+
+
+    cat("[##......] Before filtering ",
         "Num of variants:", dim(vcf)[1] ,
         "Num of individuals:", ncol(vcf)-9,
         "\n");
@@ -146,9 +152,15 @@ readVCF = function(filename = "data.vcf",
     #### --- Filter by MAF ---- ####
 
 
-    cat("[###.....] Filtering and thinning variants\n");
+    #cat("[###.....] Filtering and thinning variants\n");
 
-    maf = apply(gt1+gt2,1,function(x) mean(x,na.rm=T)/2)
+    maf = apply( (gt1>0)+(gt2>0) ,1,function(x) mean(x,na.rm=T))/2
+
+    #sites = apply(gt1+gt2,1,function(x) sum(!is.na(x)) )
+
+    #maf = maf / ( 2*sites )
+
+    maf[maf>0.5] = 1-maf[maf>0.5]
 
 
     #maf[maf>0.5] = 1 - maf[maf>0.5]
@@ -159,9 +171,10 @@ readVCF = function(filename = "data.vcf",
     s = which(ok < 2)
 
 
-    if( ! is.na(min_maf) ) {  s = intersect( s  ,   which(maf >= min_maf & maf <= 1 - min_maf ) ) }
 
-    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf | maf >= 1 - max_maf) ) }
+    if( ! is.na(min_maf) ) {  s = intersect( s  ,   which(maf >= min_maf ) ) }
+
+    if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf ) ) }
 
     if(length(s) > maxNumberOfVariants) s = sort( sample(s,maxNumberOfVariants) )
 
@@ -180,11 +193,10 @@ readVCF = function(filename = "data.vcf",
     # cat("Q: flip genotypes if maf > 0.5???????????\n")
 
 
-    cat("[##......] Chromosome:  ", unique(vcf[,1]),
-        " Mbp: " , min(vcf[,2])/1e6,
-        " Region Size: ", 1e-3 * ( max(vcf[,2])-min(vcf[,2]) ) ,"kb ",
-        "Num of variants:", dim(vcf)[1] , "(after filtering)\n")
-
+    cat("[###.....] After filtering ",
+        "Num of variants:", dim(vcf)[1] ,
+        "Num of individuals:", ncol(gt1),
+        "\n");
 
     ##
 
@@ -196,7 +208,59 @@ readVCF = function(filename = "data.vcf",
     R$gt2 = gt2
     R$individual_ids = individual_ids
     R$maf = maf
+
+    R$varid = paste(R$vcf[,1],R$vcf[,2],R$vcf[,3],R$vcf[,4],R$vcf[,5] )
     # R$gt = gt
+
+    R
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' Generate a market subset of a vcf file
+#'
+#'
+#' @param vcf VCF data as created by function readVCF
+#' @param varid varid of markers to subset. Should be a selection from vcf$varid
+#'
+#' @return VCF object to be used by startSimulation function.
+#'
+#' @examples
+#'  \dontrun{
+#' library(sim1000G)
+#` vcf <- readVCF("region.vcf.gz", maxNumberOfVariants = 100, min_maf = 0.02, max_maf = 0.1)
+#` readGeneticMap(chromosome = 4)
+#` startSimulation(vcf, totalNumberOfIndividuals = 500)
+#'  }
+#' @export
+subsetVCF = function(vcf , varid )
+{
+
+    R = new.env()
+
+    subset = which(vcf$varid %in% varid)
+
+    R$individual_ids = vcf$individual_ids
+
+    R$gt1 = vcf$gt1[subset,]
+    R$gt2 = vcf$gt2[subset,]
+    R$vcf = vcf$vcf[subset,]
+    R$maf = vcf$maf[subset]
+    R$varid = vcf$varid[subset]
+
+
 
     R
 

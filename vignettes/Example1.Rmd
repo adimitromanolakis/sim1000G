@@ -28,20 +28,20 @@ Genetic map can be downloaded through sim1000G.
 We extract the CEU samples from a region of chromosome 4 from 80MBp to 1000MBp using bcftools:
 
 
-```{r eval=FALSE}
+```{R eval=TRUE}
 
 
 ped = read.table("20130606_g1k.ped",h=T,as=T,sep="\t")
 
-id = ped$Individual.ID [ ped$Population == "CEU" ]
-id2 = ped$Individual.ID [ ped$Population == "GBR" ]
+pop1 = c("CEU","TSI","GBR")
+id1 = ped$Individual.ID [ ped$Population %in% pop1 ]
 
-cat(c(id,id2),file="/tmp/samples1.txt",sep="\n")
+cat(c(id1),file="/tmp/samples1.txt",sep="\n")
 
 
-id = ped$Individual.ID [ ped$Population == "ASW" ]
+id2 = ped$Individual.ID [ ped$Population == "ASW" ]
 
-cat(c(id),file="/tmp/samples2.txt",sep="\n")
+cat(c(id2),file="/tmp/samples2.txt",sep="\n")
 
 
 ```
@@ -54,37 +54,57 @@ cat(c(id),file="/tmp/samples2.txt",sep="\n")
 
 ```{sh, eval=F}
 
+#77356278-77703432
 
 INPUT_VCF=ALL.chr4.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
 
-bcftools view -S /tmp/samples1.txt -r 4:80000000-82000000 --force-samples $INPUT_VCF > ~/tmp/chr4-80.vcf
+bcftools view -S /tmp/samples1.txt -r 4:73000000-74000000 --force-samples $INPUT_VCF > ~/tmp/chr4-80.vcf
 
-bcftools  filter -i 'EUR_AF>0' < ~/tmp/chr4-80.vcf  | gzip > ~/tmp/chr4-80-filt.vcf.gz
-
-bcftools view -S /tmp/samples2.txt -r 4:80000000-82000000 --force-samples $INPUT_VCF > ~/tmp/chr4-80-p2.vcf
-
-bcftools  filter -i 'EUR_AF>0' < ~/tmp/chr4-80-p2.vcf  | gzip > ~/tmp/chr4-80-filt-p2.vcf.gz
+ bcftools  filter -i 'AF>0 && EUR_AF>0 && AFR_AF>0' < ~/tmp/chr4-80.vcf | gzip > ~/tmp/chr4-80-filt.vcf.gz
 
 
 ```
  
 
-```{R, echo=FALSE}
+```{R, echo=FALSE,fig.width=12,fig.height=12}
 library(sim1000G)
 
-vcf  = readVCF("~/fs/tmp/chr4-80-filt.vcf.gz",   maxNumberOfVariants = 500 , min_maf = 1e-6, max_maf = 0.32)
-#vcf2 = readVCF("~/fs/tmp/chr4-80-filt-p2.vcf.gz",maxNumberOfVariants = 500 , min_maf = 0.1, max_maf = 0.32)
+vcf  = readVCF("~/fs/tmp/chr4-80-filt.vcf.gz",   maxNumberOfVariants = 200 , min_maf = 1e-6, max_maf = 0.32)
+
+
 gplots::heatmap.2(cor(t( vcf$gt1+vcf$gt2))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
+
+
 #gplots::heatmap.2(cor(t(vcf2$gt1))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none")
 
+
+
+ids = vcf$individual_ids
+
+
+id_pop1 = which(ids %in% id1)
+id_pop2 = which(ids %in% id2)
+
+
+
+gplots::heatmap.2(cor(t( vcf$gt1[,id_pop1]+vcf$gt2[,id_pop1]))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
+
+
+gplots::heatmap.2(cor(t( vcf$gt1[,id_pop2]+vcf$gt2[,id_pop2]))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
+
+
+downloadGeneticMap(4)
+readGeneticMap(4)
 ```
 
 
-```{R echo=FALSE}
-readGeneticMap(4)
+```{R echo=FALSE, fig.width=12, fig.height=12}
+#
 
-# startSimulation(vcf, totalNumberOfIndividuals = 200,subset=vcf$individual_ids[1:40])
-startSimulation(vcf, totalNumberOfIndividuals = 400)
+startSimulation(vcf, subset = id1)
+
+saveSimulation("pop1")
+
 
 N = 200
 id = c()
@@ -94,43 +114,51 @@ genotypes = retrieveGenotypes(id)
 
 gplots::heatmap.2(cor( genotypes )^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
 
-```
 
 
+startSimulation(vcf, subset = id2)
 
-```{R}
+saveSimulation("pop2")
 
 
-startSimulation(vcf2, totalNumberOfIndividuals = 200)
-
-N = 70
+N = 200
 id = c()
 for(i in 1:N) id[i] = SIM$addUnrelatedIndividual()
 
 genotypes2 = retrieveGenotypes(id)
 
-#gplots::heatmap.2(cor( genotypes2  )^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none")
+gplots::heatmap.2(cor( genotypes2 )^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
+
 
 
 ```
 
+
 ```{r}
+library(SKAT)
 
-( apply(genotypes,1,mean,na.rm=T)/2  ) [ 1: 20 ] 
-( apply(genotypes2,1,mean,na.rm=T)/2  ) [ 1: 20 ] 
+loadSimulation("pop1")
 
-genotypes[1,] == genotypes[2,]
-
-dim(genotypes)
-dim(genotypes2)
+plot(apply(genotypes,2,mean), apply(genotypes2,2,mean))
 
 gt = rbind(genotypes,genotypes2)
 
-gt = genotypes
+#gt = genotypes
+
 dim(gt)
 
 maf = apply(gt,2,mean,na.rm=T)/2
-maf[1:20]
+apply(gt,2,function(x) sum(is.na(x)))
+
+flip  = which(maf > 0.5) ; gt[,flip] = 2 - gt[,flip]
+
+
+#gt = genotypes
+
+dim(gt)
+
+maf = apply(gt,2,mean,na.rm=T)/2
+plot(maf)
 
 sum(maf==0)
 

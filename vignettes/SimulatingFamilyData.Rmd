@@ -38,12 +38,12 @@ output:
 ## Installing the package and dependencies (if installing from source)
 
 
-sim1000G depends on two R packages stringr and hapsim. Stringr is included in CRAN and can be installed as usual. Hapsim, can be installed from its source package.
+sim1000G depends on two R packages stringr and hapsim. Stringr and hapsim are included in CRAN and can be installed as follows:
 
 
-```{R}
-if(0) install.packages("stringr")
-if(0) install.packages("hapsim_0.31.tar.gz",repos=NULL, source=T)
+```{R, eval=FALSE}
+install.packages("stringr")
+install.packages("hapsim")
 
 ```
 
@@ -51,8 +51,8 @@ if(0) install.packages("hapsim_0.31.tar.gz",repos=NULL, source=T)
 
 The sim1000G package can then be installed: 
 
-```{R}
-if(0) install.packages("sim1000G_1.04.tar.gz",repos=NULL, source=T)
+```{R,  eval=FALSE}
+install.packages("sim1000G_1.32.tar.gz",repos=NULL, source=T)
 ```
 
 
@@ -60,7 +60,7 @@ if(0) install.packages("sim1000G_1.04.tar.gz",repos=NULL, source=T)
 
 ## Genetic Map
 
-The genetic map we use is from the Hapmap 2010 release, lifted over to GrCH37 coordinates. It  was downloaded from:
+The genetic map in use by the package is from the Hapmap 2010 release, lifted over to GrCH37 coordinates. It  was downloaded from:
 
 
 ftp://ftp.ncbi.nlm.nih.gov/hapmap/recombination/2011-01_phaseII_B37/
@@ -88,7 +88,7 @@ The following parameters can be set:
 * maxNumberOfVariants : total number of variants from the area that will be kept, generally should be < 1000
 * min_maf : minimum allele frequency of the markers to keep. It should be >0.
 * max_maf : maximum allele frequency of markers to keep 
-* totalNumberOfIndividuals : how many simulated individuals to reserve space for
+* maximumNumberOfIndividuals : how many simulated individuals to reserve space for
 
 
 
@@ -98,16 +98,16 @@ The following parameters can be set:
 
 library(sim1000G)
 
-download.file("https://adimitromanolakis.github.io/sim1000G/data/region.vcf.gz", destfile = "region.vcf.gz")
+download.file( "https://adimitromanolakis.github.io/sim1000G/data/region.vcf.gz", destfile = "region.vcf.gz" )
 
 
-vcf = readVCF("region.vcf.gz", maxNumberOfVariants = 100 , min_maf = 0.02 , max_maf = NA)
+vcf = readVCF( "region.vcf.gz", maxNumberOfVariants = 100 , min_maf = 0.02 , max_maf = NA ) 
 
 
-downloadGeneticMap(4)
+downloadGeneticMap( 4 )
 readGeneticMap( chromosome = 4 )
 
-startSimulation(vcf, totalNumberOfIndividuals = 1200)
+startSimulation( vcf )
 
 ```
 

@@ -119,7 +119,7 @@ downloadGeneticMap = function(chromosome, dir = NA) {
 
 
         if(is.na(dir)) {
-            dest_dir = system.file("extdata", package = "sim1000G")
+            dest_dir = system.file("datasets", package = "sim1000G")
         } else {
             dest_dir = dir
         }

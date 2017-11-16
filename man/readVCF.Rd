@@ -4,7 +4,7 @@
 \alias{readVCF}
 \title{Read a vcf file, with options to filter out low or high frequency markers.}
 \usage{
-readVCF(filename = "data.vcf", thin = 1, maxNumberOfVariants = 400,
+readVCF(filename = "data.vcf", thin = NA, maxNumberOfVariants = 400,
   min_maf = 0.02, max_maf = NA, region_start = NA, region_end = NA)
 }
 \arguments{

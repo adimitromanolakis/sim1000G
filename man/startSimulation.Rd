@@ -5,8 +5,8 @@
 \title{Starts and initializes the data structures required for a simulation. A VCF file
 should be read beforehand with the function readVCF.}
 \usage{
-startSimulation(vcf, totalNumberOfIndividuals = 250, subset = NA,
-  randomdata = 0)
+startSimulation(vcf, totalNumberOfIndividuals = 2000, subset = NA,
+  randomdata = 0, typeOfGeneticMap = "download")
 }
 \arguments{
 \item{vcf}{Input vcf file of a region (can be .gz). Must contain phased data.}
@@ -16,6 +16,8 @@ startSimulation(vcf, totalNumberOfIndividuals = 250, subset = NA,
 \item{subset}{A subset of individual IDs to use for simulation}
 
 \item{randomdata}{If 1, disregards the genotypes in the vcf file and generates independent markers that are not in LD.}
+
+\item{typeOfGeneticMap}{Specify whether to download a genetic map for this chromosome}
 }
 \description{
 Starts and initializes the data structures required for a simulation. A VCF file
