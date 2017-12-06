@@ -11,7 +11,9 @@ simulatePopulation = function(num_individuals = 300)
 }
 
 
-
+## Read two VCF file with regions from two different populations
+## vcf1: variants from european population
+## vcf2: variants from african populations
 
 vcf1 = readVCF("~/fs/tmp/CEU-TSI-GBR/CEU-TSI-GBR-region-chr4-205-MAML3.vcf.gz",
                maxNumberOfVariants = 5000,  min_maf =  1e-6, max_maf = 0.02)
@@ -19,6 +21,11 @@ vcf1 = readVCF("~/fs/tmp/CEU-TSI-GBR/CEU-TSI-GBR-region-chr4-205-MAML3.vcf.gz",
 
 vcf2 = readVCF("~/fs/tmp/AFR/ASW-LWK-YRI-region-chr4-205-MAML3.vcf.gz",
                maxNumberOfVariants = 5000,  min_maf = 1e-6, max_maf = 0.05)
+
+
+## Since the filtering was performed seperately in each file,
+## we select only the common variants between the to VCF files
+##
 
 common = intersect(vcf1$varid,vcf2$varid)
 

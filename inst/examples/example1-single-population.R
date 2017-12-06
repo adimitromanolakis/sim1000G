@@ -1,45 +1,26 @@
 # Example 1 , read a region from 1000 genomes, simulate 300 individuals, compute and display LD patterns
 
-library("sim1000G")
+library(sim1000G)
 library(gplots)
 
-vcf_file_name = "~/fs/tmp/CEU-TSI-ASW-region-chr4-93-TMEM156.vcf.gz"
 
-maxNumberOfVariants = 300
-min_maf = 0.02
-max_maf = 0.2
+# Read the example file included in sim1000G
 
-vcf = readVCF(vcf_file_name,
-              maxNumberOfVariants = maxNumberOfVariants ,
-              min_maf = min_maf ,
-              max_maf = max_maf)
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
 
-startSimulation(vcf)
+# Alternatively provide a vcf file here:
+#vcf_file = "~/fs/tmp/sim4/pop1/region-chr4-312-GABRB1.vcf.gz"
+
+vcf = readVCF( vcf_file, maxNumberOfVariants = 200 , min_maf = 0.15 ,max_maf = NA)
 
 
-ids = generateUnrelatedIndividuals(150)
-genotypes = retrieveGenotypes(ids)
+startSimulation(vcf, totalNumberOfIndividuals = 8000)
+ids = generateUnrelatedIndividuals(20)
 
+genotype = retrieveGenotypes(ids)
 
-
-
-#### Generate multiple datasets ####
-
-datasets = list()
-
-for(i in 1:50) {
-
-    SIM$reset()
-
-    ids = generateUnrelatedIndividuals(150)
-    genotypes = retrieveGenotypes(ids)
-
-    datasets[[i]] = genotypes
-
-}
-
-
-
+heatmap(genotype,col=c("white","orange","red"))
 
 
 
@@ -49,15 +30,15 @@ examineMAFandLD = function() {
 
     SIM$reset()
 
-
-    ids = generateUnrelatedIndividuals(1500)
-    genotypes = retrieveGenotypes(ids)
+    genotypes = retrieveGenotypes(generateUnrelatedIndividuals(2000))
 
 
     ld_population =   cor   (  t(SIM$population_gt1 + SIM$population_gt2 )   ) ^2
 
     ld_simulated_data = cor(genotypes)^2
-    ld_simulated_data[1:10,1:10]
+
+
+
 
     s1 = ld_simulated_data[ lower.tri(ld_simulated_data) ]
     s2 = ld_population[ lower.tri(ld_simulated_data) ]
@@ -66,19 +47,69 @@ examineMAFandLD = function() {
 
     maf1 = apply(genotypes,2,mean)/2
     maf2 = apply( t(vcf$gt1+vcf$gt2)  , 2 ,mean)/2
-    maf1[maf1>0.5] = 1-maf1[maf1>0.5]
-    maf2[maf2>0.5] = 1-maf2[maf2>0.5]
 
-    plot(maf1,maf2)
+    flip = which(maf1>0.5)
 
+  #  maf1[flip] = 1-maf1[flip]
+  #  maf2[flip] = 1-maf2[flip]
 
-
-
-    # n = nrow(ld_simulated_data)
-    # ld_simulated_data [ lower.tri(ld_simulated_data)  ] = ld_population[ lower.tri(ld_population) ]
+    plot(maf2,maf1,xlab="True MAF",ylab="Simulated MAF")
 
 
 }
 
+
+examineMAFandLD()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LDplot = function() {
+
+    SIM$reset()
+
+
+    ids = generateUnrelatedIndividuals(1400)
+    genotypes = retrieveGenotypes(ids)
+
+
+    ld_population =   cor   (  t(SIM$population_gt1 + SIM$population_gt2 )   ) ^2
+
+    ld_simulated_data = cor(genotypes)^2
+
+    n = nrow(ld_simulated_data)
+    ld_simulated_data [ lower.tri(ld_simulated_data)  ] = ld_population[ lower.tri(ld_population) ]
+
+
+
+
+    heatmap.2(ld_simulated_data , col=rev(heat.colors(899)) , trace="none",
+              Rowv=F,Colv=F,
+              #rowsep = 0:10e3, colsep =  0:10e3,
+             # sepwidth=c(0.001,0.001),sepcolor=rgb(0,0,0,0.04),
+             # offsetRow = 100,offsetCol = 100,
+             breaks=seq(0,1,l=900)
+
+              )
+
+
+
+
+}
+
+LDplot()
 
 

@@ -1,7 +1,5 @@
 
 
-#vcf <- new.env()
-
 
 #' Creates a regional vcf file using bcftools to extract a region from 1000 genomes vcf files
 #'
@@ -99,7 +97,16 @@ readVCF = function(filename = "data.vcf",
 
     # vcf = read.table(filename, sep="\t", comment.char="", as.is=T, header=T)
 
-    vcf = read_delim(filename, "\t", comment = "##", progress = FALSE)
+
+    readr_locale = locale(date_names = "en", date_format = "%AD", time_format = "%AT",
+           decimal_mark = ".", grouping_mark = ",", tz = "",
+           encoding = "UTF-8", asciify = FALSE)
+
+    #cat("Read VCF\n\n")
+    #print(readr_locale)
+
+
+    vcf = read_delim(filename, "\t", comment = "##", progress = FALSE, locale = readr_locale)
     vcf = as.data.frame(vcf)
 
 
@@ -119,6 +126,10 @@ readVCF = function(filename = "data.vcf",
          cat("Too few variants in VCF file\n");
          return(NA);
     }
+
+
+
+
 
 
     # Reduce number of variants
@@ -176,6 +187,9 @@ readVCF = function(filename = "data.vcf",
 
     if( ! is.na(max_maf) ) {  s = intersect( s  ,   which(maf <= max_maf ) ) }
 
+    total_number_of_variants_within_maf = length(s)
+
+
     if(length(s) > maxNumberOfVariants) s = sort( sample(s,maxNumberOfVariants) )
 
 
@@ -210,6 +224,9 @@ readVCF = function(filename = "data.vcf",
     R$maf = maf
 
     R$varid = paste(R$vcf[,1],R$vcf[,2],R$vcf[,3],R$vcf[,4],R$vcf[,5] )
+
+    R$total_number_of_variants_within_maf = total_number_of_variants_within_maf
+
     # R$gt = gt
 
     R

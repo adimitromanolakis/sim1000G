@@ -1,56 +1,104 @@
-
+#
+# for j in 1 2 3 4 5 6 7 8 9 10; do  for i in 1 2 3 4 5 6 7 8 9 10; do
+# submit j-$j-$i Rscript example2-population-stratification.R ; done ; done
+#
 
 library(sim1000G)
-library(SKAT)
 library(parallel)
+library(SKAT)
 
 
 
 par = commandArgs(T)
 
+NREP = 15
 
+run_parallel = 1
 
-
-
-ped = read.table("20130606_g1k.ped",h=T,as=T,sep="\t")
-pops = split(ped$Individual.ID,list(ped$Population))
-id_firstPopulation = c( pops$CEU, pops$TSI )
-id_secondPopulation = c( pops$ASW )
-
+numcpus = 10
 
 #### Initialize the simulation ####
 
-x = list.files(path="~/fs/tmp/genes",full.names = T)
-x = sample(x,1)
-load(x)
-genename = x
+
+# List all available gene region vcf files
+all_vcf_files = list.files(path="pop1",  full.names = T)
+selected_vcf_file = sample(all_vcf_files , 1)
 
 
-#load("~/fs/tmp/genes/rd-89-ADGRA3")
+# Find corresponding vcf file of second population
+selected_vcf_file2 = gsub("pop1","pop2", selected_vcf_file)
+
+
+
+cat("Reading the two vcf files: " , selected_vcf_file,selected_vcf_file2 ,"\n")
+
+
+
 
 initSimulation = function() {
-    startSimulation(vcf1)
+
+
+    ## Read two VCF file with regions from two different populations
+    ## vcf1: variants from european population
+    ## vcf2: variants from african populations
+
+
+    gn = strsplit(selected_vcf_file,"-")
+    gn = sapply(gn, function(x) x[4])
+
+    genename <<- gn
+    geneid = gn
+
+    vcf1 <<- readVCF(selected_vcf_file ,
+                    maxNumberOfVariants = 800,  min_maf =  1e-6, max_maf = 0.02)
+
+
+    if(class(vcf1) != "environment") stop(1);
+
+
+    vcf2 <<- readVCF( selected_vcf_file2  ,
+                    maxNumberOfVariants = 800,  min_maf = 1e-6, max_maf = 0.02)
+
+
+    print(class(vcf1))
+    print(class(vcf2))
+
+
+    if(class(vcf1) != "environment") stop(1);
+    if(class(vcf2) != "environment") stop(1);
+
+
+
+
+    ## We select only the common variants between the 2 VCF files
+    ##
+
+    common = intersect(vcf1$varid,vcf2$varid)
+    print(length(common))
+
+    if(length(common) < 10) stop(0);
+
+    vcf1 <<- subsetVCF(vcf1, common)
+    vcf2 <<- subsetVCF(vcf2, common)
+
+    cat(geneid, length(common)," \n");
+
+
+    common_causal_pool <<- 1:length(vcf1$maf)
+
+    cat("start sim\n");
+
+
+    startSimulation(vcf1, totalNumberOfIndividuals = 10000)
     saveSimulation("pop1")
 
-    startSimulation(vcf2)
+    startSimulation(vcf2, totalNumberOfIndividuals = 10000)
     saveSimulation("pop2")
+
+
+    print(length(vcf1$varid))
+
 }
-
-initSimulation();
-
-
-if(0) {
-maf1 = apply( (vcf$gt1+vcf$gt2)[,id_firstPopulation],1,mean)/2
-maf2 = apply( (vcf$gt1+vcf$gt2)[,id_secondPopulation],1,mean)/2
-
-plot(maf1,maf2)
-plot(maf1-maf2)
-
-common_causal_pool = which(maf1 > 0 & maf2 > 0 & maf1 < 0.03 & maf2 < 0.03)
-}
-
-
-common_causal_pool = 1:length(vcf1$maf)
 
 
 
@@ -59,13 +107,6 @@ common_causal_pool = 1:length(vcf1$maf)
 SEED = 1
 
 #### Function to generate one simulation replicate ####
-
-
-computeMaf = function(genotypes) {
-
-    maf = apply(genotypes,2,mean)/2
-    maf
-}
 
 
 
@@ -79,28 +120,17 @@ predictor_logistic = function(b, geno) {
 
 
 
-seed=NA
-numcausal=7
-effect_size = 0
-pop_strat = 10
-N_pop1 = 400
-N_pop2 = 200
-N_aswcontrols = 10
-
-
 
 replicate1 = function(seed=NA,
-                     numcausal=10,
+                     numcausal = 10,
                      effect_size = 10,
                      pop_strat = 0,
                      N_pop1 = 400,
-                     N_pop2 = 200,
-                     N_aswcontrols = 10
-
+                     N_pop2 = 200
                     )
 {
 
-        if(!is.na(seed)) set.seed(seed)
+        # if(!is.na(seed)) set.seed(seed)
 
 
 
@@ -127,6 +157,8 @@ replicate1 = function(seed=NA,
         }
 
 
+
+        pca = prcomp(gt)
 
 
         maf = apply(gt,2,mean,na.rm=T)/2
@@ -167,7 +199,7 @@ replicate1 = function(seed=NA,
                 ncases = sum(phenotype==0)
                 ncontrols = sum(phenotype==1)
 
-                cat(ncases,ncontrols,"\n")
+                # cat(ncases,ncontrols,"\n")
                 if( abs(ncases-ncontrols) < 5 ) break();
 
                 if(ncases > ncontrols) S = S + 0.1
@@ -176,36 +208,37 @@ replicate1 = function(seed=NA,
 
 
 
-
-        s = which(rownames(gt) == "CEU")
-
-
-
-        print(table(phenotype, rownames(gt)))
-
-
-
-
         t=( table(rownames(gt)  , phenotype ) )
         print(t)
 
 
 
+
         #phenotype = sample(phenotype)
+
         obj<-SKAT_Null_Model(phenotype ~ 1, out_type="D")
 
         pv = SKAT((gt),obj)$p.value
 
+
+
+
         if(sum(rownames(gt) != "CEU") > 0) {
+
             population = factor(rownames(gt))
-            obj<-SKAT_Null_Model(phenotype ~ population, out_type="D")
+
+            # obj<-SKAT_Null_Model(phenotype ~ population, out_type="D")
+
+            obj<-SKAT_Null_Model(phenotype ~
+                 pca$x[,1] + pca$x[,2] + pca$x[,3] + pca$x[,4] + pca$x[,5] + pca$x[,6], out_type="D")
+
             pv_cov = SKAT((gt),obj)$p.value
+
+
         } else {
             pv_cov = -1
         }
 
-
-        cat("SKAT PV " , pv, "\n")
 
 
         cat("EFF= ", effect_size,
@@ -228,27 +261,29 @@ replicate1 = function(seed=NA,
 }
 
 
-
+# replicate1(NA,10,0, 2,1000,1000)
 
 
 #### Generate multiple simulation replicates ####
 
+rand_name = function() {
 
-results = list()
+    x = sprintf("%04d",round(runif(10,1,1000)) )
+    paste(x,sep="",collapse="")
 
-if(0) {
-    library(parallel)
-    cl <- makeCluster(getOption("cl.cores", 2))
-    clusterExport(cl,c("vcf1","vcf2","initSimulation","replicate1",ls() ))
-    clusterEvalQ(cl, library(sim1000G))
-    clusterEvalQ(cl, initSimulation())
 }
 
 
+seed=NA
+numcausal=7
+effect_size = 0
+pop_strat = 10
+N_pop1 = 400
+N_pop2 = 200
 
-#for(pop_strat in c(0,0.5,1,2))
-#for(EFF in c(0,log(1.5),log(3)))
-#for(p2 in c(0,100,200))
+
+
+
 
 par = as.numeric(par)
 EFF = par[1]
@@ -257,44 +292,115 @@ pop_strat = par[3]
 
 nsim = par[4]
 
-
-    {
-
-        # clusterExport(cl,c("p2","EFF","pop_strat"))
-
-        z2 = mclapply(mc.cores=12,mc.preschedule=T,
-                      1:nsim, function(x)
-
-                  replicate1(seed=NA, numcausal = 10, effect_size = EFF,
-                            N_pop1 = 400-p2,
-                            N_pop2 = p2,
-                            pop_strat = pop_strat,
-                            N_aswcontrols = NA
-                  )
-
-                    )
-        print(z2)
-        results = c(results,z2)
-
-        save(results,file="sim-results.rdata")
+if(0) {
+    EFF=2
+    p2 = 100
+    pop_strat = 2
+    nsim=2
+}
 
 
-    }
+
+base_seed = round( runif(1,0,1e9) )
+
+initSimulation()
+
+
+if(run_parallel == 1) {
+
+
+    library(parallel)
+
+    cat("Cluster setup\n");
+    cl <- makeCluster(getOption("cl.cores", numcpus))
+
+    clusterExport(cl, c(
+            "selected_vcf_file","selected_vcf_file2",
+            "initSimulation","replicate1",
+            "par","EFF","p2","pop_strat","nsim",
+            "predictor_logistic",
+            "base_seed"
+       ) )
+
+    cat("exportDone\n");
+
+    clusterEvalQ(cl, library(sim1000G))
+    clusterEvalQ(cl, library(SKAT))
+    cat("initSim\n");
+
+    clusterEvalQ(cl, initSimulation())
+
+    cat("initSim Done\n");
+
+
+
+}
+
+
+
+
+
+clusterRep = function(x) {
+
+    replicate1(seed=base_seed + 101*x, numcausal = 10, effect_size = EFF,
+               N_pop1 = 2000-p2,
+               N_pop2 = p2,
+               pop_strat = pop_strat
+    )
+}
+
+
+results = list()
+
+
+
+pop_strat=4; EFF=0; p2=1400; clusterRep()
+
+
+
+
+
+pop_strat = 0
+EFF = log(3)
+p2 = 0
+
+
+effect_sizes = c(0,log(1.5), log(1.8) , log(3), log(5)  )
+
+# pop_strat_list = c(0,0.5,1,2)
+pop_strat_list = c(2)
+
+for(pop_strat in pop_strat_list)
+    for(EFF in effect_sizes)
+        for(p2 in c(0,100,200,400))
+
+{
+
+
+        cat(pop_strat, EFF, p2,"\n");
+
+        if(run_parallel == 1) {
+            clusterExport(cl,c("p2","EFF","pop_strat","genename"))
+
+             v = clusterApply(cl,1:NREP, clusterRep)
+        }
+
+        if(run_parallel == 0) v = lapply(1:NREP, clusterRep)
+
+        results = c( results  ,  v   )
+}
+
+
+
 
 
 pz = plyr::ldply(results)
+pz$MASTER_ID = "REPLICATE"
 
 options(width = 3000)
-
 print(pz)
 
 
-rand_name = function() {
-
-    x = sprintf("%04d",round(runif(10,1,1000)) )
-    paste(x,sep="",collapse="")
-
-}
 
 
 
@@ -309,126 +415,22 @@ reshape2::dcast(pz, eff + factor(pop2) ~ 1,value.var="pv2",function(x) mean(x<0.
 
 save(results,pz,file=sprintf("sim-results-%s.rdata",rand_name()) )
 
-
-
-
-sdfdsdf();
-
-
-
-
-#replicate(1,2,-5,400,200)
+write.table(pz,  row=F,quote=F,sep=" ", col=F, file=sprintf("out-%s.txt", rand_name()) )
 
 
 
 
 
-p2 = 220
-replicate(seed=NA, numcausal = 10, effect_size = 4,
-          N_pop1 = 400-p2,
-          N_pop2 = p2,
-          pop_strat = 3,
-          N_aswcontrols = NA
-)
+#### Copy Files ####
+sdfsdf();
 
 
-
-replicate(seed=NA, numcausal = 5, effect_size = 0,
-          N_pop1 = 400,
-          N_pop2 = 200,
-          pop_strat = 1,
-          N_aswcontrols = NA
-)
-
-
-
-
-##### Other pieces of code that are not used now #####
-
-
-
-
-if(!is.na(N_aswcontrols) ) {
-
-
-
-    s1 = which( ( rownames(gt) == "ASW" & phenotype == 0)  )
-    s = setdiff(1:nrow(gt), s1)
-
-    if(1) {
-        s2 = which( ( rownames(gt) == "ASW" & phenotype == 1)  )
-        l = length(s2)
-        s2 = sample(s2, l-N_aswcontrols)
-        s = setdiff(s, s2)
-    }
-
-
-    gt = gt[s,]
-    phenotype = phenotype[s]
-    table(rownames(gt)  , phenotype )
-
-
+if(1) {
+    system("cp example2-population-stratification.R generate-sim-cmds.R ~/fs/tmp/sim4")
 }
 
 
 
-
-if(0) {
-
-    X1 = cor(( genotypes ))^2
-    X2 = cor(( genotypes2 ))^2
-
-    z1 = X2[ lower.tri(X2[1:50,1:50]) ]
-    z2 = X2orig[ lower.tri(X2orig[1:50,1:50]) ]
-    plot(z1,z2)
-
-
-
-    gplots::heatmap.2(cor(( genotypes2 ))^2,col=rev( heat.colors(300) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=301))
-
-    X1 = cor(( genotypes ))^2
-    X2 = cor(( genotypes2 ))^2
-    X1[ lower.tri(X1) ] = X1orig[ lower.tri(X1orig)  ]
-
-    gplots::heatmap.2(X1,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
-
-
-}
-
-
-
-
-
-if(0) {
-    maf1 = apply(genotypes,2,mean)/2
-    maf2 = apply(genotypes2,2,mean)/2
-
-    common_causal_pool = which(maf1 > 0 & maf2 > 0 & maf1 < 0.03 & maf2 < 0.03)
-    plot(maf1[common_causal_pool],maf2[common_causal_pool])
-
-    cat("Similar maf variants: ",length(common_causal_pool),"\n")
-}
-
-
-
-
-if(0) {
-    gplots::heatmap.2(cor(t( vcf$gt1+vcf$gt2))^2,
-                      col=rev( heat.colors(100) ) ,
-                      Rowv=F,Colv=F,trace="none",
-                      breaks=seq(0,1,l=101))
-
-
-    #gplots::heatmap.2(cor(t(vcf2$gt1))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none")
-
-
-
-    X1orig = cor(t( vcf$gt1[,which_pop1]+vcf$gt2[,which_pop1]))^2
-
-    gplots::heatmap.2(X1orig, col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
-
-
-    X2orig = cor(t( vcf$gt1[,which_pop2]+vcf$gt2[,which_pop2]))^2
-    gplots::heatmap.2(X2orig,  col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
-
-}
+k="l"; for i in {1..50}; do
+submit j-$k-$i Rscript example2-population-stratification.R ;
+done

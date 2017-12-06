@@ -143,6 +143,10 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 2000,
         SIM$varinfo = vcf$vcf[,1:8]
         SIM$bp = vcf$vcf[,2]
 
+
+
+
+
         if(length(ls(geneticMap) ) == 0) {
 
             cat("Downloading genetic map for chromosome " , vcf$vcf[1,1],"\n" )
@@ -151,6 +155,26 @@ startSimulation = function(vcf, totalNumberOfIndividuals = 2000,
 
 
             #stop("ERROR: Genetic map has not been read yet\n");
+        } else {
+
+         s = range(geneticMap$bp)
+
+         vcf_chrom = sub("^chr","",vcf$vcf[,1])
+         gm_chrom = sub("chr","",geneticMap$chr[1])
+
+         if( sum ( SIM$bp > s[2] | SIM$bp < s[1] ) > 0 ) {
+            stop("Error: Genetic map does not match the region being simulated\n");
+
+         }
+
+         if(gm_chrom[1] != vcf_chrom[1]) {
+            cat(gm_chrom,vcf_chrom[1],"\n");
+
+            stop("Error: mismatch between chromosomes in genetic map and vcf ");
+         }
+
+
+
         }
 
 

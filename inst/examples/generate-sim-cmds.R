@@ -5,9 +5,9 @@
 nsim=100
 
 
-for(i in 1:100) {
+for(i in 1:20) {
 for(pop1 in c(0,200))
-for(eff in c(0,2,5,10)) {
+for(eff in c(0,1,2,5,10)) {
  for(pop_strat in c(0,0.5,1,2)) {
 
 

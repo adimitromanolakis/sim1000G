@@ -100,7 +100,7 @@ geneticMap <- new.env()
 #'
 #'
 #'
-#' downloadGeneticMap(22)
+#' downloadGeneticMap(22, dir=temp.dir() )
 #'
 #'
 #' @export
@@ -129,14 +129,13 @@ downloadGeneticMap = function(chromosome, dir = NA) {
 
 
         if(file.exists(dest_path)) {
-            # cat("Already downloaded");
+            cat(" -> Using genetic map found on ", dest_path, "\n");
             return(dest_path)
 
         }
 
-        cat("Downloading genetic map from:",url,"\n")
+        cat(" -> Downloading genetic map from:",url,"\n")
         cat(" -> Saving genetic map to: " , dest_path,"\n")
-        #file.exists(dest_path)
 
         download.file(url  ,  destfile = dest_path, quiet=TRUE)
         return(dest_path)
