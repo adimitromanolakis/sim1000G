@@ -1,6 +1,10 @@
 # sim1000G
 
 
+![statistics](https://cranlogs.r-pkg.org/badges/sim1000G)
+
+
+
 R package for simulating genetic marker data. 
 
 #### Author: Apostolos Dimitromanolakis
