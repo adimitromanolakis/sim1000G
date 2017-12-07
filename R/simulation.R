@@ -289,6 +289,65 @@ SIM$addUnrelatedIndividual = function() {
 }
 
 
+
+
+
+SIM$addUnrelatedIndividualWithHaplotype = function(new_haplotype, ancestral_index) {
+
+
+    #    e1 = environment()
+    #    print(parent.env(e1))
+    #    print(ls(  parent.env(e1)   ))
+
+
+
+    newGenotypes = SIM$generateNewHaplotypes()
+
+    if(length(new_haplotype) !=  length(newGenotypes$gt1)) {
+
+        stop("new_haplotype length is wrong");
+    }
+
+
+
+    if(SIM$individuals_generated >= SIM$total_individuals) {
+
+        stop("No more space for saving new individual genotypes. You can increase the parameter maximumNumberOfIndividuals when calling function startSimulation.")
+
+    }
+
+
+    SIM$individuals_generated = SIM$individuals_generated + 1
+    j = SIM$individuals_generated
+
+    # cat("Adding individual ",j, " from pool\n");
+
+
+    SIM$gt1[j,] = newGenotypes$gt1
+    SIM$gt2[j,] = newGenotypes$gt2
+
+    SIM$origin1[j,] = SIM$last_ancestral_index
+    SIM$origin2[j,] = -SIM$last_ancestral_index
+
+
+    SIM$gt2[j,] = new_haplotype
+    SIM$origin2[j,] = - ancestral_index
+
+
+
+    return(j)
+}
+
+
+
+
+
+
+
+
+
+
+
 SIM$addIndividualFromGenotypes = function(gt1,gt2) {
 
     if(SIM$individuals_generated >= SIM$total_individuals) {
@@ -656,7 +715,7 @@ computePairIBD12 = function(i,j) {
     r2 = SIM$origin2[j,]
 
 
-    table(q1,q2)
+    # table(q1,q2)
 
     IBD1H1 = q1 == r1 | q1 == r2
     IBD1H2 = q2 == r1 | q2 == r2
@@ -722,6 +781,8 @@ computePairIBD1 = function(i,j) {
 
 
     IBD1=IBD12-IBD2
+
+    IBD1
 
 }
 
