@@ -11,7 +11,7 @@ startSimulation(vcf, totalNumberOfIndividuals = 2000, subset = NA,
 \arguments{
 \item{vcf}{Input vcf file of a region (can be .gz). Must contain phased data.}
 
-\item{totalNumberOfIndividuals}{Maximum Number of individuals that will ever be generated}
+\item{totalNumberOfIndividuals}{Maximum Number of individuals to allocate memory for. Set it above the number of individuals you want to simulate.}
 
 \item{subset}{A subset of individual IDs to use for simulation}
 
@@ -42,4 +42,3 @@ plotRegionalGeneticMap(vcf$vcf[,2]+1)
 startSimulation(vcf, totalNumberOfIndividuals = 200)
 
 }
-

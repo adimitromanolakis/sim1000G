@@ -20,6 +20,39 @@ SIM = new.env()
 
 
 
+#' Holds general package options
+#' @export
+pkg.opts = new.env()
+pkg.opts$recombination = 1
+
+
+#' Set options of the recombination model.
+#'
+#'
+#' @param model Either poisson or chisq
+#'
+#' @examples
+#'
+#' setRecombinationModel("poisson")
+#'
+#' setRecombinationModel("chisq")
+#'
+#' @export
+setRecombinationModel = function(model) {
+
+    if(model == "poisson") { pkg.opts$recombination = 0 }
+    else
+        if(model == "chisq") { pkg.opts$recombination = 1 }
+        else
+        { stop("model should be poisson or chisq")}
+
+
+}
+
+
+
+
+
 # vcf_url = "https://adimitromanolakis.github.io/sim1000G/inst/examples/region.vcf.gz"
 # vcf_file = gzcon(url(vcf_url))
 # vcf_file = textConnection( readLines(vcf_file) )
@@ -34,7 +67,7 @@ SIM = new.env()
 #' should be read beforehand with the function readVCF.
 #'
 #' @param vcf Input vcf file of a region (can be .gz). Must contain phased data.
-#' @param totalNumberOfIndividuals Maximum Number of individuals that will ever be generated
+#' @param totalNumberOfIndividuals Maximum Number of individuals to allocate memory for. Set it above the number of individuals you want to simulate.
 #' @param subset A subset of individual IDs to use for simulation
 #' @param randomdata If 1, disregards the genotypes in the vcf file and generates independent markers that are not in LD.
 #' @param typeOfGeneticMap Specify whether to download a genetic map for this chromosome
@@ -275,6 +308,9 @@ SIM$addUnrelatedIndividual = function() {
     SIM$individuals_generated = SIM$individuals_generated + 1
     j = SIM$individuals_generated
 
+
+    # cat("N less than 0 is:", sum(newGenotypes$gt1<0)  , sum (newGenotypes$gt2<0)  , "id=", j,"\n")
+
     # cat("Adding individual ",j, " from pool\n");
 
 
@@ -438,6 +474,9 @@ SIM$mate = function(i, j) {
 
 
 SIM$reset = function() {
+    SIM$pool = NA
+    SIM$npool = 0
+
     SIM$individuals_generated = 0
 }
 
@@ -455,7 +494,7 @@ SIM$reset = function() {
 #' library("sim1000G")
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' genetic_map_of_region = system.file("examples","chr4-geneticmap.txt", package = "sim1000G")
@@ -473,7 +512,8 @@ generateUnrelatedIndividuals = function(N=1) {
     for(i in 1:N) id[i] = SIM$addUnrelatedIndividual()
 
 
-    id
+    return( id )
+
 }
 
 
@@ -506,7 +546,7 @@ generateUnrelatedIndividuals = function(N=1) {
 #' library("sim1000G")
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' genetic_map_of_region = system.file("examples","chr4-geneticmap.txt", package = "sim1000G")
@@ -603,7 +643,7 @@ newFamilyWithOffspring = function(family_id, noffspring = 2) {
 #' library("sim1000G")
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
@@ -689,7 +729,7 @@ newFamily3generations = function(familyid, noffspring2 = 2, noffspring3 = c(1,1)
 #' library("sim1000G")
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
@@ -748,7 +788,7 @@ computePairIBD12 = function(i,j) {
 #' library("sim1000G")
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
@@ -803,7 +843,7 @@ computePairIBD1 = function(i,j) {
 #' library("sim1000G")
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
@@ -880,7 +920,7 @@ printMatrix = function(m) {
 #' library("sim1000G")
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
@@ -919,7 +959,7 @@ saved_SIM = new.env()
 #'
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap

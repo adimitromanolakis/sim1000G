@@ -18,8 +18,7 @@ Downloads a genetic map for a particular chromosome under GRCh37 coordinates for
 
 
 
-downloadGeneticMap(22)
+downloadGeneticMap(22, dir=tempdir() )
 
 
 }
-

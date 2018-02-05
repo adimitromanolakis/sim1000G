@@ -28,4 +28,3 @@ getCMfromBP(seq(1e6,100e6,by=1e6))
 
 
 }
-

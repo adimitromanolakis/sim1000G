@@ -22,4 +22,3 @@ plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))}
 The plot shows the centimorgan vs base-pair positions.
 The position of markers that have been read is also depicted as vertical lines
 }
-

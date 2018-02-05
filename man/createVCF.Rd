@@ -12,4 +12,3 @@ none
 \description{
 Creates a regional vcf file using bcftools to extract a region from 1000 genomes vcf files
 }
-

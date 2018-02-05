@@ -16,4 +16,3 @@ Utility function that prints a matrix. Useful for IBD12 matrices.
 
 printMatrix (  matrix(runif(16), nrow=4) )
 }
-

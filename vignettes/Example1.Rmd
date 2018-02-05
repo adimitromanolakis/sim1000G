@@ -3,7 +3,7 @@ title: "sim1000G - example 1"
 author: "Apostolos Dimitromanolakis"
 editor_options: 
   chunk_output_type: inline
-output: rmarkdown::html_vignette
+output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{Quickstart2}
   %\VignetteEncoding{UTF-8}
@@ -28,10 +28,12 @@ Genetic map can be downloaded through sim1000G.
 We extract the CEU samples from a region of chromosome 4 from 80MBp to 1000MBp using bcftools:
 
 
-```{R eval=TRUE}
+```{R eval=TRUE, message=FALSE, warning=FALSE}
 
 
-ped = read.table("20130606_g1k.ped",h=T,as=T,sep="\t")
+ped_file_1000genomes = system.file("examples", "20130606_g1k.ped", package = "sim1000G")
+
+ped = read.table(ped_file_1000genomes,h=T,as=T,sep="\t")
 
 pop1 = c("CEU","TSI","GBR")
 id1 = ped$Individual.ID [ ped$Population %in% pop1 ]
@@ -43,6 +45,8 @@ id2 = ped$Individual.ID [ ped$Population == "ASW" ]
 
 cat(c(id2),file="/tmp/samples2.txt",sep="\n")
 
+pop_map = ped$Population
+names(pop_map) = ped$Individual.ID
 
 ```
 
@@ -66,19 +70,25 @@ bcftools view -S /tmp/samples1.txt -r 4:73000000-74000000 --force-samples $INPUT
 ```
  
 
-```{R, echo=FALSE,fig.width=12,fig.height=12}
+```{R, echo=FALSE,fig.width=12,fig.height=12 , message=TRUE, warning=FALSE}
 library(sim1000G)
 
-vcf  = readVCF("~/fs/tmp/chr4-80-filt.vcf.gz",   maxNumberOfVariants = 200 , min_maf = 1e-6, max_maf = 0.32)
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region-chr4-93-TMEM156.vcf.gz" )
 
+vcf  = readVCF(vcf_file,   maxNumberOfVariants = 200 , min_maf = 0.02, max_maf = 0.32)
 
-gplots::heatmap.2(cor(t( vcf$gt1+vcf$gt2))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
+table( pop_map[ vcf$individual_ids ])
+
+C = cor(t( vcf$gt1+vcf$gt2))^2
+gplots::heatmap.2(C,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
 
 
 #gplots::heatmap.2(cor(t(vcf2$gt1))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none")
 
 
 
+if(0) {
 ids = vcf$individual_ids
 
 
@@ -92,13 +102,12 @@ gplots::heatmap.2(cor(t( vcf$gt1[,id_pop1]+vcf$gt2[,id_pop1]))^2,col=rev( heat.c
 
 gplots::heatmap.2(cor(t( vcf$gt1[,id_pop2]+vcf$gt2[,id_pop2]))^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F,trace="none",breaks=seq(0,1,l=101))
 
+}
 
-downloadGeneticMap(4)
-readGeneticMap(4)
 ```
 
 
-```{R echo=FALSE, fig.width=12, fig.height=12}
+```{R echo=FALSE, eval=FALSE, fig.width=12, fig.height=12}
 #
 
 startSimulation(vcf, subset = id1)
@@ -134,7 +143,7 @@ gplots::heatmap.2(cor( genotypes2 )^2,col=rev( heat.colors(100) ) ,Rowv=F,Colv=F
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 library(SKAT)
 
 loadSimulation("pop1")

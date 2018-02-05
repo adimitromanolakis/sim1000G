@@ -24,7 +24,7 @@ See function computePairIBD12 for description.
 library("sim1000G")
 
 examples_dir = system.file("examples", package = "sim1000G")
-vcf_file = sprintf("\%s/region.vcf.gz", examples_dir)
+vcf_file = file.path(examples_dir, "region.vcf.gz")
 vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 
 # For realistic data use the functions downloadGeneticMap / readGeneticMap
@@ -39,4 +39,3 @@ v = computePairIBD1(1, 3)
 cat("IBD1 of pair = ", v, "\\n");
 
 }
-

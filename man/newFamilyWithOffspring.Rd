@@ -23,4 +23,3 @@ ped_line = newFamilyWithOffspring(10,3)
 
 
 }
-

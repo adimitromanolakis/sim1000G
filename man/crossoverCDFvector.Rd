@@ -12,4 +12,3 @@ crossoverCDFvector
 This vector contains the density between two recombination events, as a cumulative density function.
 }
 \keyword{datasets}
-

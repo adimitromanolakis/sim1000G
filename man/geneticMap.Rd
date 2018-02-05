@@ -12,4 +12,3 @@ geneticMap
 Holds the genetic map information that is used for simulations.
 }
 \keyword{datasets}
-

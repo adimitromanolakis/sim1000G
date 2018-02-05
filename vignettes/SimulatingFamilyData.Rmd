@@ -13,7 +13,7 @@ vignette: >
 ---
 
 ```{r,results='asis',echo=F}
-cat("<style>body { zoom: 0.8; }   .main-content pre> code {  white-space: pre-wrap; } </style>")
+cat("<style>body { zoom: 1.2; }   .main-content pre> code {  white-space: pre-wrap; } </style>")
 ```
 
 ```{cpp, echo=F}
@@ -37,23 +37,25 @@ output:
 
 ## Installing the package and dependencies (if installing from source)
 
+Typically you can install sim1000G from the CRAN repository:
 
-sim1000G depends on two R packages stringr and hapsim. Stringr and hapsim are included in CRAN and can be installed as follows:
+```{R, eval=FALSE}
+install.packages("sim1000G")
+```
+
+Alternatively you can download and install the latest version from github. sim1000G depends on stringr,hapsim and readr :
 
 
 ```{R, eval=FALSE}
 install.packages("stringr")
 install.packages("hapsim")
+install.packages("readr")
+
+install.packages("sim1000G_1.36.2.tar.gz",repos=NULL, source=T)
 
 ```
 
 
-
-The sim1000G package can then be installed: 
-
-```{R,  eval=FALSE}
-install.packages("sim1000G_1.32.tar.gz",repos=NULL, source=T)
-```
 
 
 
@@ -94,14 +96,15 @@ The following parameters can be set:
 
 
 
-```{r, results='hold', collapse=F, eval=T} 
+```{r eval=T, message=FALSE, warning=FALSE, collapse=F, results='hide'}
 
 library(sim1000G)
 
-download.file( "https://adimitromanolakis.github.io/sim1000G/data/region.vcf.gz", destfile = "region.vcf.gz" )
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
 
 
-vcf = readVCF( "region.vcf.gz", maxNumberOfVariants = 100 , min_maf = 0.02 , max_maf = NA ) 
+vcf = readVCF( vcf_file , maxNumberOfVariants = 100 , min_maf = 0.02 , max_maf = NA ) 
 
 
 downloadGeneticMap( 4 )
@@ -122,7 +125,7 @@ After the individual is generated, its haplotypes are available at the arrays `S
 An example with 30 individuals is below
 
 
-```{r, echo=T, results='hold', eval=T, fig.width=17,fig.height=12}
+```{r eval=T, echo=T, fig.height=12, fig.width=17, message=FALSE, warning=FALSE, results='hide'}
 
 
 
@@ -164,7 +167,7 @@ Below we show an example on how to simulate 100 families with 2 offspring each.
 In addition we write the output to a PED/MAP file in plink format, for further analysis.
 
 
-```{r, echo=T, results='hold', eval=T}
+```{r, echo=T, results='hold', eval=T   ,  results='hide'}
 
 
 # Simulate one family with 2 offspring
@@ -215,7 +218,7 @@ The simulator tracks the locations of all the ancestral alleles in 2 seperate ar
 
 Unfortunately, tracking the ancestral alleles makes the simulator a lot slower, so if we don't need this functionality, we can remove it later.
 
-```{r}
+```{r ,  results='hide'}
 
 
 n = SIM$individuals_generated

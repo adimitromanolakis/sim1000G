@@ -2,7 +2,8 @@
 % Please edit documentation in R/recombination.R
 \name{generateRecombinationDistances}
 \alias{generateRecombinationDistances}
-\title{Generate recombination distances using a chi-square model.}
+\title{Generate inter-recombination distances using a chi-square model. Note this are the distances between two succesive recombination events and not
+the absolute positions of the events. To generate the locations of the recombination events see the example below.}
 \usage{
 generateRecombinationDistances(n)
 }
@@ -10,9 +11,21 @@ generateRecombinationDistances(n)
 \item{n}{Number of distances to generate}
 }
 \value{
-vector of recombination distances in centimorgan
+vector of distances between two recombination events.
 }
 \description{
-Generate recombination distances using a chi-square model.
+Generate inter-recombination distances using a chi-square model. Note this are the distances between two succesive recombination events and not
+the absolute positions of the events. To generate the locations of the recombination events see the example below.
 }
+\examples{
 
+library("sim1000G")
+
+distances = generateRecombinationDistances(20)
+
+
+positions_of_recombination = cumsum(distances)
+
+
+
+}

@@ -4,12 +4,16 @@
 \alias{subsetVCF}
 \title{Generate a market subset of a vcf file}
 \usage{
-subsetVCF(vcf, varid)
+subsetVCF(vcf, var_index = NA, var_id = NA, individual_id = NA)
 }
 \arguments{
 \item{vcf}{VCF data as created by function readVCF}
 
-\item{varid}{varid of markers to subset. Should be a selection from vcf$varid}
+\item{var_index}{index of number to subset. Should be in the range 1..length(vcf$varid)}
+
+\item{var_id}{id  of markers to subset. Should be a selection from vcf$varid. NA if no filtering on id to be performed.}
+
+\item{individual_id}{IDs of individuals to subset. Should be a selection from vcf$individual_id}
 }
 \value{
 VCF object to be used by startSimulation function.
@@ -18,8 +22,13 @@ VCF object to be used by startSimulation function.
 Generate a market subset of a vcf file
 }
 \examples{
- \dontrun{
-library(sim1000G)
- }
-}
 
+examples_dir = system.file("examples", package = "sim1000G")
+
+vcf_file = file.path(examples_dir, "region-chr4-93-TMEM156.vcf.gz")
+
+vcf = readVCF( vcf_file, maxNumberOfVariants = 500 , min_maf = 0.02 ,max_maf = NA)
+
+vcf2 = subsetVCF(vcf, var_index=1:50)
+
+}

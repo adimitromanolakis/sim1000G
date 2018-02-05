@@ -23,4 +23,3 @@ readGeneticMapFromFile("genetic_map_GRCh37_chr4.txt.gz")
 
 }
 }
-

@@ -19,6 +19,10 @@ generateRecombinationDistances_noInterference = function ( n ) {
 
 
 
+
+
+
+
 #' Genetates a recombination vector arising from one meiotic event.
 #' The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )
 #'
@@ -29,7 +33,7 @@ generateRecombinationDistances_noInterference = function ( n ) {
 #' library("sim1000G")
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+#' vcf_file = file.path(examples_dir, "region.vcf.gz")
 #' vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
 #'
 #' # For realistic data use the functions downloadGeneticMap / readGeneticMap
@@ -77,6 +81,35 @@ generateSingleRecombinationVector = function(cm) {
 
 
 
+#' Genetates a recombination vector arising from one meiotic event.
+#' The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )
+#'
+#' @param chromosomeLength The length of the region in cm.
+#'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' readGeneticMap(4)
+#' generateChromosomeRecombinationPositions(500)
+#'
+#' @export
+generateChromosomeRecombinationPositions = function(chromosomeLength = 500) {
+
+    pos = generateRecombinationDistances(10)
+
+    while(sum(pos) < chromosomeLength) pos = c(pos, generateRecombinationDistances(10) )
+
+    pos = cumsum(pos)
+
+    pos = pos[pos <= chromosomeLength]
+    pos
+}
+
+
+
+
+
 
 
 
@@ -100,7 +133,7 @@ geneticMap <- new.env()
 #'
 #'
 #'
-#' downloadGeneticMap(22, dir=temp.dir() )
+#' downloadGeneticMap(22, dir=tempdir() )
 #'
 #'
 #' @export
@@ -120,9 +153,15 @@ downloadGeneticMap = function(chromosome, dir = NA) {
 
         if(is.na(dir)) {
             dest_dir = system.file("datasets", package = "sim1000G")
+
+            if(dest_dir == "") dest_dir = tempdir()
+            if(!dir.exists(dest_dir))  dest_dir = tempdir()
         } else {
             dest_dir = dir
         }
+
+
+        cat("yes..\n", dest_dir, file="/tmp/xxx")
 
         #dest_dir = "./"
         dest_path = file.path(dest_dir, fname)
@@ -146,16 +185,17 @@ downloadGeneticMap = function(chromosome, dir = NA) {
 
 
 
-#' Reads a genetic map downloaded from the function downloadGeneticMap.
+#' Reads a genetic map downloaded from the function downloadGeneticMap or reads a genetic map from a specified file. If the argument filename is used
+#' then the genetic map is read from the corresponding file. Otherwise, if a chromosome is specified, the genetic map is downloaded for human chromosome
+#' using grch37 coordinates.
 #'
 #' The map must contains a complete chromosome or enough markers to cover the area that
 #' will be simulated.
 #'
-#' The file can be downloaded from the provided genetic maps by using the function downloadGeneticMap.
 #'
-#'
-#' @param chromosome Chromosome number to download recombination distances from.
-#' @param dir Directory the map file is located.
+#' @param chromosome Chromosome number to download a genetic map for , or
+#' @param filename A filename of an existing genetic map to read from (default NA).
+#' @param dir Directory the map file will be saved (only if chromosome is specified).
 #'
 #'
 #'
@@ -169,8 +209,10 @@ downloadGeneticMap = function(chromosome, dir = NA) {
 #'
 #'
 #' @export
-readGeneticMap = function(chromosome, dir=NA) {
+readGeneticMap = function(chromosome, filename=NA, dir=NA) {
 
+
+    if( ! is.na(filename) ) { return ( readGeneticMapFromFile(filename) ) }
     #if(is.na(dir)) dir = system.file("extdata", package = "sim1000G")
 
     fname =   downloadGeneticMap( chromosome ,dir=dir)
@@ -412,15 +454,30 @@ makeCDF = function() {
 
 
 
-#' Generate recombination distances using a chi-square model.
+#' Generate inter-recombination distances using a chi-square model. Note this are the distances between two succesive recombination events and not
+#' the absolute positions of the events. To generate the locations of the recombination events see the example below.
 #'
 #'
 #' @param n Number of distances to generate
 #'
-#' @return vector of recombination distances in centimorgan
+#' @return vector of distances between two recombination events.
+#'
+#' @examples
+#'
+#' library("sim1000G")
+#'
+#' distances = generateRecombinationDistances(20)
+#'
+#'
+#' positions_of_recombination = cumsum(distances)
+#'
+#'
 #'
 #' @export
 generateRecombinationDistances = function ( n ) {
+
+
+    if(pkg.opts$recombination == 0) { return(generateRecombinationDistances_noInterference(n))}
 
 
     t = findInterval( runif(n), crossoverCDF$vector )

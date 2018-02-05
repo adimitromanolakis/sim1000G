@@ -21,4 +21,3 @@ library("sim1000G")
 mean ( generateRecombinationDistances_noInterference ( 200 ) )
 
 }
-

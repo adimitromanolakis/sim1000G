@@ -16,4 +16,3 @@ writePED(vcf, fam, filename = "out")
 \description{
 Writes a plink compatible PED/MAP file from the simulated genotypes
 }
-

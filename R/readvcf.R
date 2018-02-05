@@ -54,12 +54,13 @@ cp /tmp/2.vcf ~/tmp
 #' @return VCF object to be used by startSimulation function.
 #'
 #' @examples
-#'  \dontrun{
-#' library(sim1000G)
-#` vcf <- readVCF("region.vcf.gz", maxNumberOfVariants = 100, min_maf = 0.02, max_maf = 0.1)
-#` readGeneticMap(chromosome = 4)
-#` startSimulation(vcf, totalNumberOfIndividuals = 500)
-#'  }
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#' vcf_file = file.path(examples_dir, "region-chr4-93-TMEM156.vcf.gz")
+#'
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 500 , min_maf = 0.02 ,max_maf = NA)
+#'
+#' str(as.list(vcf))
 #' @export
 readVCF = function(filename = "data.vcf",
                    thin = NA,
@@ -102,7 +103,10 @@ readVCF = function(filename = "data.vcf",
            decimal_mark = ".", grouping_mark = ",", tz = "",
            encoding = "UTF-8", asciify = FALSE)
 
-    #cat("Read VCF\n\n")
+
+    # in the futre we would like to use data.table as it is faster
+    #data.table::fread(filename,"\t",comment="##")
+
     #print(readr_locale)
 
 
@@ -122,14 +126,14 @@ readVCF = function(filename = "data.vcf",
     if( !is.na( region_start ) ) vcf = vcf[ vcf[,2] >= region_start  , ]
     if( !is.na( region_end   ) ) vcf = vcf[ vcf[,2] <= region_end    , ]
 
-    if( nrow(vcf) < 10 ) {
-         cat("Too few variants in VCF file\n");
+    if( nrow(vcf) < 5 ) {
+         cat("Too few variants in VCF file ( < 5 )\n");
          return(NA);
     }
 
 
 
-
+    if(is.na(maxNumberOfVariants) ) maxNumberOfVariants = 1e10
 
 
     # Reduce number of variants
@@ -170,6 +174,9 @@ readVCF = function(filename = "data.vcf",
     #sites = apply(gt1+gt2,1,function(x) sum(!is.na(x)) )
 
     #maf = maf / ( 2*sites )
+
+    print(range(maf))
+    print(length(maf))
 
     maf[maf>0.5] = 1-maf[maf>0.5]
 
@@ -250,35 +257,63 @@ readVCF = function(filename = "data.vcf",
 #'
 #'
 #' @param vcf VCF data as created by function readVCF
-#' @param varid varid of markers to subset. Should be a selection from vcf$varid
+#' @param var_id id  of markers to subset. Should be a selection from vcf$varid. NA if no filtering on id to be performed.
+#' @param var_index index of number to subset. Should be in the range 1..length(vcf$varid)
+#' @param individual_id IDs of individuals to subset. Should be a selection from vcf$individual_id
+#'
 #'
 #' @return VCF object to be used by startSimulation function.
 #'
 #' @examples
-#'  \dontrun{
-#' library(sim1000G)
-#` vcf <- readVCF("region.vcf.gz", maxNumberOfVariants = 100, min_maf = 0.02, max_maf = 0.1)
-#` readGeneticMap(chromosome = 4)
-#` startSimulation(vcf, totalNumberOfIndividuals = 500)
-#'  }
+#'
+#' examples_dir = system.file("examples", package = "sim1000G")
+#'
+#' vcf_file = file.path(examples_dir, "region-chr4-93-TMEM156.vcf.gz")
+#'
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 500 , min_maf = 0.02 ,max_maf = NA)
+#'
+#' vcf2 = subsetVCF(vcf, var_index=1:50)
+#'
 #' @export
-subsetVCF = function(vcf , varid )
+subsetVCF = function(vcf , var_index = NA , var_id = NA, individual_id = NA )
 {
 
     R = new.env()
 
-    subset = which(vcf$varid %in% varid)
+    if(!is.na(var_id[1]) && !is.na(var_index[1])) { stop("only one of var_id and var_index should be given")}
 
-    R$individual_ids = vcf$individual_ids
+    if(!is.na(var_id[1])) var_subset = which(vcf$varid %in% var_id)
 
-    R$gt1 = vcf$gt1[subset,]
-    R$gt2 = vcf$gt2[subset,]
-    R$vcf = vcf$vcf[subset,]
-    R$maf = vcf$maf[subset]
-    R$varid = vcf$varid[subset]
+    if(!is.na(var_index[1])) var_subset = var_index
+
+    if(length(var_subset) == 0) stop("no variants found")
+
+    s = var_subset
+
+    vcf2 = as.list(vcf)
 
 
+    vcf2$maf = vcf2$maf [s]
+    vcf2$varid = vcf2$varid [s]
 
-    R
+    vcf2$gt1 = vcf2$gt1 [s,]
+    vcf2$gt2 = vcf2$gt2 [s,]
 
+    vcf2$vcf = vcf2$vcf [s,]
+
+
+    if(!is.na(individual_id)) {
+
+        s = which(vcf$individual_ids %in% individual_id)
+
+        if(length(s) == 0) stop("no individuals found")
+
+        vcf2$individual_ids = vcf2$individual_ids[s]
+        vcf2$gt1 = vcf2$gt1[,s]
+        vcf2$gt2 = vcf2$gt2[,s]
+
+        # vcf$maf = apply(vcf2$gt1+vcf2$gt2, mean, na.rm=T) / 2
+    }
+
+    as.environment(vcf2)
 }

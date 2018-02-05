@@ -4,7 +4,7 @@
 \name{SIM}
 \alias{SIM}
 \title{Holds data necessary for a simulation.}
-\format{An object of class \code{environment} of length 6.}
+\format{An object of class \code{environment} of length 7.}
 \usage{
 SIM
 }
@@ -12,4 +12,3 @@ SIM
 Holds data necessary for a simulation.
 }
 \keyword{datasets}
-
