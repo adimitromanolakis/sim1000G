@@ -81,7 +81,7 @@ generateSingleRecombinationVector = function(cm) {
 
 
 
-#' Genetates a recombination vector arising from one meiotic event.
+#' Generates a recombination vector arising from one meiotic event.
 #' The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )
 #'
 #' @param chromosomeLength The length of the region in cm.
@@ -90,6 +90,7 @@ generateSingleRecombinationVector = function(cm) {
 #'
 #' library("sim1000G")
 #'
+#' # generate a recombination events for chromosome 4
 #' readGeneticMap(4)
 #' generateChromosomeRecombinationPositions(500)
 #'
@@ -147,9 +148,6 @@ downloadGeneticMap = function(chromosome, dir = NA) {
             chromosome
         )
 
-        # dest_dir = system.file("extdata", fname, package = "sim1000G")
-
-
 
         if(is.na(dir)) {
             dest_dir = system.file("datasets", package = "sim1000G")
@@ -160,8 +158,6 @@ downloadGeneticMap = function(chromosome, dir = NA) {
             dest_dir = dir
         }
 
-
-        cat("yes..\n", dest_dir, file="/tmp/xxx")
 
         #dest_dir = "./"
         dest_path = file.path(dest_dir, fname)
@@ -471,7 +467,7 @@ makeCDF = function() {
 #'
 #' positions_of_recombination = cumsum(distances)
 #'
-#'
+#' if(0) hist(generateRecombinationDistances(20000),n=100)
 #'
 #' @export
 generateRecombinationDistances = function ( n ) {
@@ -486,6 +482,5 @@ generateRecombinationDistances = function ( n ) {
 }
 
 
-#hist(generateRecombinationDistances(20000),n=100)
 
 
