@@ -7,12 +7,14 @@ library(gplots)
 # Read the example file included in sim1000G
 
 examples_dir = system.file("examples", package = "sim1000G")
-vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+
+vcf_file = file.path(examples_dir,"region.vcf.gz")
+
 
 # Alternatively provide a vcf file here:
 #vcf_file = "~/fs/tmp/sim4/pop1/region-chr4-312-GABRB1.vcf.gz"
 
-vcf = readVCF( vcf_file, maxNumberOfVariants = 200 , min_maf = 0.15 ,max_maf = NA)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 200 , min_maf = 0.03 ,max_maf = 0.4)
 
 
 startSimulation(vcf, totalNumberOfIndividuals = 8000)
@@ -24,13 +26,32 @@ heatmap(genotype,col=c("white","orange","red"))
 
 
 
+str( SIM$gt1[,]  )
+
+
+#q = SIM$addUnrelatedIndividualWithHaplotype(SIM$gt1[1,], -100)
+
+
 
 
 examineMAFandLD = function() {
 
     SIM$reset()
 
-    genotypes = retrieveGenotypes(generateUnrelatedIndividuals(2000))
+    ids = generateUnrelatedIndividuals(2000)
+    ids
+    genotypes = retrieveGenotypes(ids)
+
+    table(genotypes)
+    #image(genotypes<0)
+
+    ids = generateUnrelatedIndividuals(2)
+    ids
+
+    x= retrieveGenotypes(ids)
+    str(x)
+    plot(x[1,])
+
 
 
     ld_population =   cor   (  t(SIM$population_gt1 + SIM$population_gt2 )   ) ^2

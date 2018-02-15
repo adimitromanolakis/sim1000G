@@ -1,32 +1,31 @@
 ---
-title: "sim1000G: Simulating family data from 1000 genomes haplotypes"
+title: "sim1000G: Simulating variant data in families using 1000 genomes haplotypes"
 author: "Apostolos Dimitromanolakis"
 date: "`r Sys.Date()`"
 
-output: rmarkdown::html_vignette
+#output: rmarkdown::html_vignette
+#output: rmarkdown::pdf_document
+
+
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
 
 vignette: >
-  %\VignetteIndexEntry{Quickstart2}
+  %\VignetteIndexEntry{Simulating family data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 
 ---
 
 ```{r,results='asis',echo=F}
-cat("<style>body { zoom: 1.2; }   .main-content pre> code {  white-space: pre-wrap; } </style>")
+cat("<style>body { zoom: 1.0; }   .main-content pre> code {  white-space: pre-wrap; } </style>")
 ```
 
-```{cpp, echo=F}
-output:
-  prettydoc::html_pretty:
-    theme: cayman
-    highlight: github
-```
-
- 
 
 
-## Introduction and examples
+## Introduction and examples for sim1000G
 
 
 
@@ -34,8 +33,7 @@ output:
 
 
 
-
-## Installing the package and dependencies (if installing from source)
+### Installing the package and dependencies (if installing from source)
 
 Typically you can install sim1000G from the CRAN repository:
 
@@ -43,39 +41,11 @@ Typically you can install sim1000G from the CRAN repository:
 install.packages("sim1000G")
 ```
 
-Alternatively you can download and install the latest version from github. sim1000G depends on stringr,hapsim and readr :
-
-
-```{R, eval=FALSE}
-install.packages("stringr")
-install.packages("hapsim")
-install.packages("readr")
-
-install.packages("sim1000G_1.36.2.tar.gz",repos=NULL, source=T)
-
-```
-
-
-
-
-
-
-## Genetic Map
-
-The genetic map in use by the package is from the Hapmap 2010 release, lifted over to GrCH37 coordinates. It  was downloaded from:
-
+The genetic map in use by the package is from the Hapmap 2010 release, lifted over to GrCH37 coordinates. It was downloaded from:
 
 ftp://ftp.ncbi.nlm.nih.gov/hapmap/recombination/2011-01_phaseII_B37/
 
-
-
-
-
-
-
-
-
-## Reading a VCF file and starting the simulation
+### Reading a VCF file and starting the simulation
 
 Before starting the simulator, a VCF file of the region of interest is needed. The VCF file is used to provide the haplotypes that will be used for the simulator.
 
@@ -94,8 +64,6 @@ The following parameters can be set:
 
 
 
-
-
 ```{r eval=T, message=FALSE, warning=FALSE, collapse=F, results='hide'}
 
 library(sim1000G)
@@ -103,17 +71,14 @@ library(sim1000G)
 examples_dir = system.file("examples", package = "sim1000G")
 vcf_file = file.path(examples_dir, "region.vcf.gz")
 
-
 vcf = readVCF( vcf_file , maxNumberOfVariants = 100 , min_maf = 0.02 , max_maf = NA ) 
 
-
-downloadGeneticMap( 4 )
+# downloadGeneticMap( 4 )
 readGeneticMap( chromosome = 4 )
 
 startSimulation( vcf )
 
 ```
-
 
 ## Generating unrelated individuals
 
@@ -129,7 +94,8 @@ An example with 30 individuals is below
 
 
 
-SIM$reset()
+# The following function will erase all the indivudals that have been simulated and start over.
+# SIM$reset()
 
 
 id = c()
@@ -160,7 +126,7 @@ heatmap.2(cor(genotypes)^2, col=rev(heat.colors(100)) , trace="none",Rowv=F,Colv
 
 ## Simulating genotypes within families
 
-For related individuals in pedigrees, we simulate meiotic recombination by using the function SIM$mate(i,j). 
+Simulationg of related individuals in a pedigrees requires modelling recombination events. 
 
 Below we show an example on how to simulate 100 families with 2 offspring each.
 
@@ -203,7 +169,7 @@ fam <- time10families()
 
 # Uncomment the following line to write a plink compatible ped/map file
 
-# writePED(vcf, fam,"out")
+# writePED(vcf, fam, "out")
 
 
 

@@ -56,9 +56,11 @@ cp /tmp/2.vcf ~/tmp
 #' @examples
 #'
 #' examples_dir = system.file("examples", package = "sim1000G")
-#' vcf_file = file.path(examples_dir, "region-chr4-93-TMEM156.vcf.gz")
+#' vcf_file = file.path(examples_dir,
+#'   "region-chr4-93-TMEM156.vcf.gz")
 #'
-#' vcf = readVCF( vcf_file, maxNumberOfVariants = 500 , min_maf = 0.02 ,max_maf = NA)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 500 ,
+#'                min_maf = 0.02 ,max_maf = NA)
 #'
 #' str(as.list(vcf))
 #' @export
@@ -175,13 +177,11 @@ readVCF = function(filename = "data.vcf",
 
     #maf = maf / ( 2*sites )
 
-    print(range(maf))
-    print(length(maf))
+    #print(range(maf))
+    #print(length(maf))
 
-    maf[maf>0.5] = 1-maf[maf>0.5]
+    #maf[maf>0.5] = 1-maf[maf>0.5]
 
-
-    #maf[maf>0.5] = 1 - maf[maf>0.5]
     #maf2 = apply(gt2,1,function(x) mean(x,na.rm=T))
     #maf2[maf2>0.5] = 1 - maf2[maf2>0.5]
 
@@ -270,9 +270,10 @@ readVCF = function(filename = "data.vcf",
 #'
 #' vcf_file = file.path(examples_dir, "region-chr4-93-TMEM156.vcf.gz")
 #'
-#' vcf = readVCF( vcf_file, maxNumberOfVariants = 500 , min_maf = 0.02 ,max_maf = NA)
+#' vcf = readVCF( vcf_file, maxNumberOfVariants = 500 ,
+#'                min_maf = 0.02 ,max_maf = NA)
 #'
-#' vcf2 = subsetVCF(vcf, var_index=1:50)
+#' vcf2 = subsetVCF(vcf, var_index = 1:50)
 #'
 #' @export
 subsetVCF = function(vcf , var_index = NA , var_id = NA, individual_id = NA )

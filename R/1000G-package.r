@@ -1,8 +1,10 @@
 
 #' Simulations of rare/common variants using haplotype data from 1000 genomes
 #'
-#' Documentation and example can be found at:
-#' https://adimitromanolakis.github.io/sim1000G/inst/doc/SimulatingFamilyData.html
+#' Documentation and examples can be found at the package directory folder inst / doc
+#' or at our github url:
+#' https://adimitromanolakis.github.io/sim1000G/
+#' inst/doc/SimulatingFamilyData.html
 #'
 #' See also our github repository page at:
 #' https://github.com/adimitromanolakis/sim1000G

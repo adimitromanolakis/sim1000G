@@ -12,7 +12,7 @@ vin:
 
 
 crancheck:
-	cd .. && R CMD check --as-cran sim1000G_1.34.tar.gz
+	cd .. && R CMD check --as-cran $(PKGFILE)
 
 
 tgz:
@@ -30,4 +30,16 @@ install:
 
 package:
 	cd .. && R CMD build sim1000G
+
+
+
+
+
+
+## Development commands:
+
+
+sync_to_fs:
+	cd .. && rsync sim1000G/ -av ~/fs/pedigree/package/sim1000G/
+
 

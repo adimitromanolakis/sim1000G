@@ -1,5 +1,8 @@
 library(sim1000G)
 
+
+stop("not run, remove this line to run")
+
 a = commandArgs(T)
 
 nmarker = as.numeric(a[1])
