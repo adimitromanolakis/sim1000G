@@ -49,7 +49,7 @@ genotype = retrieveGenotypes(ids)
 
 With the genotypes we can compare the allele frequencies with the ones in the original vcf file:
 
-``R
+```R
 
 # Compare MAF of simulataed data and vcf
 plot( apply(genotype,2,mean)/2 ,  apply(vcf$gt1+vcf$gt2,1,mean)/2 )
@@ -67,6 +67,9 @@ An image showing the generated genotypes:
 gplots::heatmap.2(genotype,col=c("white","orange","red"),Colv=F, trace="none")
 
 ```
+
+
+
 
 We can also compute the correlation between the markers and show an LD plot of the region:
 
