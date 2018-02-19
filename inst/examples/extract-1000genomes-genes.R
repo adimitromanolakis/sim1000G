@@ -8,6 +8,10 @@
 ##           files: ALL.chr1.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
 ##   bcftools version 1.3.1
 
+chrom = 4
+
+gene_expand_bp = 250e3
+
 
 # Read pedigree files from 1000 genomes
 
@@ -19,13 +23,13 @@ names(pop) = ped$Individual.ID
 which_populations = c("ASW","LWK","YRI")
 
     id1 = ped$Individual.ID [ ped$Population %in% which_populations]
-    cat(id1,file="sample_subset1.txt",sep="\n")
+    cat(id1,file="sample_subset_afr.txt",sep="\n")
 
 
 which_populations = c("CEU","TSI","GBR")
 
     id1 = ped$Individual.ID [ ped$Population %in% which_populations]
-    cat(id1,file="sample_subset2.txt",sep="\n")
+    cat(id1,file="sample_subset_eur.txt",sep="\n")
 
 
 
@@ -42,7 +46,6 @@ which_populations = c("CEU","TSI","GBR")
 genes_table = read.table("~/fs/genes.txt",h=F,as=T)
 
 
-chrom = 4
 
 s = genes_table$V11 == "protein_coding" & genes_table$V1 == "4"
 
@@ -76,7 +79,14 @@ extract_commands = function(num, chrom, start,end,name, output_directory=".") {
     cmd = sprintf(cmd, region, fn, outfile)
 
 
+
+
     cmd = sprintf("echo %s\n%s\n",name,cmd)
+
+    system(cmd)
+
+
+
     cmd
 
 
@@ -94,9 +104,6 @@ end = genes_table$V3[i]
 name = genes_table$V7[i]
 
 
-extract_commands(i, chrom, start, end, name)
-
-
 
 
 
@@ -109,8 +116,8 @@ fn = "ALL.chr%s.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
 
 
 f = function(i) {
-    start_bp = genes_table$V2[i]
-    end_bp = genes_table$V3[i]
+    start_bp = genes_table$V2[i]  - gene_expand_bp
+    end_bp = genes_table$V3[i]  + gene_expand_bp
     name = genes_table$V7[i]
 
 
@@ -121,16 +128,35 @@ f = function(i) {
 
 
 
-cmd = " bcftools view -r %s -S sample_subset1.txt --force-samples %s | bcftools filter -e 'AF==0' | bgzip > %s"
+
+
+f_2mbp = function(i) {
+    start_bp = 2e6 * i
+    end_bp = 2e6*(i+1)
+    name = sprintf("r%.1fMBp",i)
+
+
+
+    extract_commands(i, chrom, start_bp, end_bp, name, output_directory)
+
+}
+
+
+# f = f_2mbp
+
+
+
+
+cmd = " bcftools view -r %s -S sample_subset_afr.txt --force-samples %s | bcftools filter -e 'AF==0' | bgzip > %s"
 outfile_template = "region-chr%s-%d-%s.vcf.gz"
-output_directory ="/tmp/pop1"
+output_directory ="/tmp/afr"
 
 cmds = sapply(1:500,f)
 
 
-cmd = " bcftools view -r %s -S sample_subset2.txt --force-samples %s | bcftools filter -e 'AF==0' | bgzip > %s"
+cmd = " bcftools view -r %s -S sample_subset_eur.txt --force-samples %s | bcftools filter -e 'AF==0' | bgzip > %s"
 outfile_template = "region-chr%s-%d-%s.vcf.gz"
-output_directory ="/tmp/pop2"
+output_directory ="/tmp/eur"
 
 cmds2 = sapply(1:500,f)
 

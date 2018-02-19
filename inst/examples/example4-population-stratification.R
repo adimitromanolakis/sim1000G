@@ -29,8 +29,8 @@ vcf2 = readVCF("~/fs/tmp/AFR/ASW-LWK-YRI-region-chr4-205-MAML3.vcf.gz",
 
 common = intersect(vcf1$varid,vcf2$varid)
 
-vcf1 = subsetVCF(vcf1, common)
-vcf2 = subsetVCF(vcf2, common)
+vcf1 = subsetVCF(vcf1, var_id = common)
+vcf2 = subsetVCF(vcf2, var_id = common)
 
 table(vcf1$varid == vcf2$varid)
 
@@ -128,8 +128,8 @@ readAllVCF = function() {
 
         if(length(common) < 10) return(1);
 
-        vcf1 = subsetVCF(vcf1, common)
-        vcf2 = subsetVCF(vcf2, common)
+        vcf1 = subsetVCF(vcf1, var_id = common)
+        vcf2 = subsetVCF(vcf2, var_id = common)
 
         cat(geneid, common," \n");
 

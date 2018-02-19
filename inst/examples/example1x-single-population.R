@@ -131,7 +131,7 @@ initializeSimulation(vcf_file,maxNumberOfVariants = 1000, min_maf=1e-10, max_maf
 genotypes = simulatePopulation(100)
 
 
-v1 = subsetVCF(vcf,vcf$varid[1:10])
+v1 = subsetVCF(vcf,var_id = vcf$varid[1:10])
 str(as.list(v1))
 
 
@@ -151,8 +151,8 @@ vcf2 = readVCF("~/fs/tmp/AFR/ASW-LWK-YRI-region-chr4-205-MAML3.vcf.gz",
 
 common = intersect(vcf1$varid,vcf2$varid)
 
-vcf1 = subsetVCF(vcf1, common)
-vcf2 = subsetVCF(vcf2, common)
+vcf1 = subsetVCF(vcf1, var_id = common)
+vcf2 = subsetVCF(vcf2, var_id = common)
 
 table(vcf1$varid == vcf2$varid)
 

@@ -1,6 +1,6 @@
 #
-# for j in 1 2 3 4 5 6 7 8 9 10; do  for i in 1 2 3 4 5 6 7 8 9 10; do
-# submit j-$j-$i Rscript example2-population-stratification.R ; done ; done
+#for j in 1 2 3 4 5 6 7 8 9 10; do  for i in 1 2 3 4 5 6 7 8 9 10; do
+#submit j3-$j-$i Rscript example2-population-stratification.R ; done ; done
 #
 
 library(sim1000G)
@@ -417,20 +417,3 @@ save(results,pz,file=sprintf("sim-results-%s.rdata",rand_name()) )
 
 write.table(pz,  row=F,quote=F,sep=" ", col=F, file=sprintf("out-%s.txt", rand_name()) )
 
-
-
-
-
-#### Copy Files ####
-sdfsdf();
-
-
-if(1) {
-    system("cp example2-population-stratification.R generate-sim-cmds.R ~/fs/tmp/sim4")
-}
-
-
-
-k="l"; for i in {1..50}; do
-submit j-$k-$i Rscript example2-population-stratification.R ;
-done

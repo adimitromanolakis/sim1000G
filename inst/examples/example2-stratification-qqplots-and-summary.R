@@ -5,37 +5,19 @@ library(plyr)
 library(reshape)
 
 
-
-if(0) {
-a = read.table("~/fs/tmp/sim4/2",as=T)
-
-str(a)
-cl = c( 'ID','eff','strat','pop1','pop2','pv1','pv2','gene','MASTER_ID' )
-colnames(a) = cl
-
-table(a$pop1)
-}
-
-
 if(1) {
 
-rm(list=ls())
-load("~/fs/tmp/sim/all.rdata")
+    rm(list=ls())
 
+    df = list()
+    setwd("~/fs/tmp/sim4-pca//")
+    x  = list.files(pattern="*.rdata")
+    x = x[ x!="all.rdata" ]
 
-a = lb
-str(a)
+    l = lapply(x,function(fname) { cat(fname,"\n"); load(fname); pz; })
 
-table(a$V5)
-table(a$V6)
-
-if(0) {
-    colnames(a)[3] = "eff"
-    colnames(a)[6] = "pop1"
-    colnames(a)[4] = "strat"
-    colnames(a)[7] = "pv"
-    colnames(a)[8] = "pv2"
-}
+    a = do.call(rbind,l)
+    str(a)
 
 }
 
@@ -125,8 +107,7 @@ for(strat in 2)
 
     }
 
-str(l)
-#l = do.call(rbind,l)
+
 
 l = ldply(l)
 l
