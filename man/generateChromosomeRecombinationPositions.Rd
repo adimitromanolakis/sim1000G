@@ -2,7 +2,7 @@
 % Please edit documentation in R/recombination.R
 \name{generateChromosomeRecombinationPositions}
 \alias{generateChromosomeRecombinationPositions}
-\title{Genetates a recombination vector arising from one meiotic event.
+\title{Generates a recombination vector arising from one meiotic event.
 The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )}
 \usage{
 generateChromosomeRecombinationPositions(chromosomeLength = 500)
@@ -11,13 +11,14 @@ generateChromosomeRecombinationPositions(chromosomeLength = 500)
 \item{chromosomeLength}{The length of the region in cm.}
 }
 \description{
-Genetates a recombination vector arising from one meiotic event.
+Generates a recombination vector arising from one meiotic event.
 The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )
 }
 \examples{
 
 library("sim1000G")
 
+# generate a recombination events for chromosome 4
 readGeneticMap(4)
 generateChromosomeRecombinationPositions(500)
 

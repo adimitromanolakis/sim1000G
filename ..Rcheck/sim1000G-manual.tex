@@ -1,0 +1,1220 @@
+\nonstopmode{}
+\documentclass[letterpaper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc} % @SET ENCODING@
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `sim1000G'}}
+\par\bigskip{\large \today}
+\end{center}
+\begin{description}
+\raggedright{}
+\inputencoding{utf8}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{Genotype Simulations for Rare or Common Variants Using
+Haplotypes from 1000 Genomes}
+\item[Version]\AsIs{1.38}
+\item[Date]\AsIs{2018-02-13}
+\item[Author]\AsIs{Apostolos Dimitromanolakis }\email{apostolis@live.ca}\AsIs{,
+Jingxiong Xu }\email{jingxiong.xu@mail.utoronto.ca}\AsIs{,
+Agnieszka Krol }\email{krol@lunenfeld.ca}\AsIs{,
+Laurent Briollais }\email{laurent@lunenfeld.ca}\AsIs{}
+\item[Maintainer]\AsIs{Apostolos Dimitromanolakis }\email{apostolis@live.ca}\AsIs{}
+\item[Description]\AsIs{Generates realistic simulated genetic data in families or unrelated individuals.}
+\item[License]\AsIs{GPL (>= 2)}
+\item[Depends]\AsIs{R (>= 2.15.2), stats, hapsim, MASS, stringr, readr}
+\item[NeedsCompilation]\AsIs{no}
+\item[VignetteBuilder]\AsIs{knitr, prettydoc}
+\item[RoxygenNote]\AsIs{6.0.1}
+\item[Suggests]\AsIs{knitr, prettydoc, testthat, rmarkdown, gplots}
+\item[Encoding]\AsIs{UTF-8}
+\item[Repository]\AsIs{CRAN}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\inputencoding{utf8}
+\HeaderA{sim1000G-package}{Simulations of rare/common variants using haplotype data from 1000 genomes}{sim1000G.Rdash.package}
+\aliasA{sim1000G}{sim1000G-package}{sim1000G}
+%
+\begin{Description}\relax
+Documentation and examples can be found at the package directory folder inst / doc
+or at our github url:
+https://adimitromanolakis.github.io/sim1000G/
+inst/doc/SimulatingFamilyData.html
+\end{Description}
+%
+\begin{Details}\relax
+See also our github repository page at:
+https://github.com/adimitromanolakis/sim1000G
+\end{Details}
+\inputencoding{utf8}
+\HeaderA{computePairIBD1}{Computes pairwise IBD1 for a specific pair of individuals. See function computePairIBD12 for description.}{computePairIBD1}
+%
+\begin{Description}\relax
+Computes pairwise IBD1 for a specific pair of individuals.
+See function computePairIBD12 for description.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+computePairIBD1(i, j)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{i}] Index of first individual
+
+\item[\code{j}] Index of second individual
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Mean IBD1 as computed from shared haplotypes
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the function downloadGeneticMap
+generateUniformGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+ped1 = newNuclearFamily(1)
+
+v = computePairIBD1(1, 3)
+
+cat("IBD1 of pair = ", v, "\n");
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{computePairIBD12}{Computes pairwise IBD1/2 for a specific pair of individuals}{computePairIBD12}
+%
+\begin{Description}\relax
+Computes pairwise IBD1/2 for a specific pair of individuals
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+computePairIBD12(i, j)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{i}] Index of first individual
+
+\item[\code{j}] Index of second individual
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Mean IBD1 and IBD2 as computed from shared haplotypes
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+generateUniformGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+ped1 = newNuclearFamily(1)
+
+v = computePairIBD12(1, 3)
+
+cat("IBD1 of pair = ", v[1], "\n");
+cat("IBD2 of pair = ", v[2], "\n");
+
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{computePairIBD2}{Computes pairwise IBD2 for a specific pair of individuals}{computePairIBD2}
+%
+\begin{Description}\relax
+Computes pairwise IBD2 for a specific pair of individuals
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+computePairIBD2(i, j)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{i}] Index of first individual
+
+\item[\code{j}] Index of second individual
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Mean IBD2 as computed from shared haplotypes
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the function downloadGeneticMap
+generateUniformGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+ped1 = newNuclearFamily(1)
+
+v = computePairIBD2(1, 3)
+
+cat("IBD2 of pair = ", v, "\n");
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{createVCF}{Creates a regional vcf file using bcftools to extract a region from 1000 genomes vcf files}{createVCF}
+%
+\begin{Description}\relax
+Creates a regional vcf file using bcftools to extract a region from 1000 genomes vcf files
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+createVCF()
+\end{verbatim}
+\end{Usage}
+%
+\begin{Value}
+none
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{crossoverCDFvector}{Contains recombination model information.}{crossoverCDFvector}
+\keyword{datasets}{crossoverCDFvector}
+%
+\begin{Description}\relax
+This vector contains the density between two recombination events, as a cumulative density function.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+crossoverCDFvector
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+An object of class \code{logical} of length 1.
+\end{Format}
+\inputencoding{utf8}
+\HeaderA{downloadGeneticMap}{Downloads a genetic map for a particular chromosome under GRCh37 coordinates for use with sim1000G.}{downloadGeneticMap}
+%
+\begin{Description}\relax
+Downloads a genetic map for a particular chromosome under GRCh37 coordinates for use with sim1000G.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+downloadGeneticMap(chromosome, dir = NA)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{chromosome}] Chromosome number to download recombination distances from.
+
+\item[\code{dir}] Directory to save the genetic map to (default: extdata)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+
+
+downloadGeneticMap(22, dir=tempdir() )
+
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{generateChromosomeRecombinationPositions}{Generates a recombination vector arising from one meiotic event. The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )}{generateChromosomeRecombinationPositions}
+%
+\begin{Description}\relax
+Generates a recombination vector arising from one meiotic event.
+The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+generateChromosomeRecombinationPositions(chromosomeLength = 500)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{chromosomeLength}] The length of the region in cm.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+# generate a recombination events for chromosome 4
+readGeneticMap(4)
+generateChromosomeRecombinationPositions(500)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{generateFakeWholeGenomeGeneticMap}{Generates a fake genetic map that spans the whole genome.}{generateFakeWholeGenomeGeneticMap}
+%
+\begin{Description}\relax
+Generates a fake genetic map that spans the whole genome.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+generateFakeWholeGenomeGeneticMap(vcf)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{vcf}] A vcf file read by function readVCF.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the function
+# downloadGeneticMap
+generateFakeWholeGenomeGeneticMap(vcf)
+
+pdf(file=tempfile())
+plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))
+dev.off()
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{generateRecombinationDistances}{Generate inter-recombination distances using a chi-square model. Note this are the distances between two succesive recombination events and not the absolute positions of the events. To generate the locations of the recombination events see the example below.}{generateRecombinationDistances}
+%
+\begin{Description}\relax
+Generate inter-recombination distances using a chi-square model. Note this are the distances between two succesive recombination events and not
+the absolute positions of the events. To generate the locations of the recombination events see the example below.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+generateRecombinationDistances(n)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{n}] Number of distances to generate
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+vector of distances between two recombination events.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+distances = generateRecombinationDistances(20)
+
+
+positions_of_recombination = cumsum(distances)
+
+if(0) hist(generateRecombinationDistances(20000),n=100)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{generateRecombinationDistances\_noInterference}{Generate recombination distances using a no-interference model.}{generateRecombinationDistances.Rul.noInterference}
+%
+\begin{Description}\relax
+Generate recombination distances using a no-interference model.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+generateRecombinationDistances_noInterference(n)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{n}] Number of distances to generate
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+recombination distances in centimorgan
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+mean ( generateRecombinationDistances_noInterference ( 200 ) )
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{generateSingleRecombinationVector}{Genetates a recombination vector arising from one meiotic event. The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )}{generateSingleRecombinationVector}
+%
+\begin{Description}\relax
+Genetates a recombination vector arising from one meiotic event.
+The origin of segments is coded as (0 - haplotype1 ,  1 - haplotype2 )
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+generateSingleRecombinationVector(cm)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{cm}] The length of the region that we want to generate recombination distances.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the function downloadGeneticMap
+generateUniformGeneticMap()
+generateSingleRecombinationVector( 1:100 )
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{generateUniformGeneticMap}{Generates a uniform genetic map.}{generateUniformGeneticMap}
+%
+\begin{Description}\relax
+Generates a uniform genetic map by approximating 1 cm / Mbp. Only used for examples.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+generateUniformGeneticMap()
+\end{verbatim}
+\end{Usage}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the function readGeneticMap
+generateUniformGeneticMap()
+
+pdf(file=tempfile())
+plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))
+dev.off()
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{generateUnrelatedIndividuals}{Generates variant data for n unrelated individuals}{generateUnrelatedIndividuals}
+%
+\begin{Description}\relax
+Generates variant data for n unrelated individuals
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+generateUnrelatedIndividuals(N = 1)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{N}] how many individuals to generate
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+IDs of the generated individuals
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12)
+
+genetic_map_of_region =
+   system.file("examples",
+     "chr4-geneticmap.txt",
+     package = "sim1000G")
+
+readGeneticMapFromFile(genetic_map_of_region)
+
+startSimulation(vcf, totalNumberOfIndividuals = 1200)
+ids = generateUnrelatedIndividuals(20)
+
+# See also the documentation on our github page
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{geneticMap}{Holds the genetic map information that is used for simulations.}{geneticMap}
+\keyword{datasets}{geneticMap}
+%
+\begin{Description}\relax
+Holds the genetic map information that is used for simulations.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+geneticMap
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+An object of class \code{environment} of length 0.
+\end{Format}
+\inputencoding{utf8}
+\HeaderA{getCMfromBP}{Converts centimorgan position to base-pair. Return a list of centimorgan positions that correspond to the bp vector (in basepairs).}{getCMfromBP}
+%
+\begin{Description}\relax
+Converts centimorgan position to base-pair. Return a list of centimorgan positions that correspond
+to the bp vector (in basepairs).
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+getCMfromBP(bp)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{bp}] vector of base-pair positions
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100,
+  min_maf = 0.12)
+
+# For realistic data use the function downloadGeneticMap
+generateUniformGeneticMap()
+getCMfromBP(seq(1e6,100e6,by=1e6))
+
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{loadSimulation}{Load some previously saved simulation data by function saveSimulation}{loadSimulation}
+%
+\begin{Description}\relax
+Load some previously saved simulation data by function saveSimulation
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+loadSimulation(id)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{id}] Name the simulation to load which was previously saved by saveSimulation
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+           min_maf = 0.12 ,max_maf = NA)
+
+# For a realistic genetic map
+# use the function readGeneticMap
+generateUniformGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+ped1 = newNuclearFamily(1)
+
+saveSimulation("sim1")
+
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.02 ,max_maf = 0.5)
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+saveSimulation("sim2")
+
+loadSimulation("sim1")
+
+
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{newFamily3generations}{Generates genotype data for a family of 3 generations}{newFamily3generations}
+%
+\begin{Description}\relax
+Generates genotype data for a family of 3 generations
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+newFamily3generations(familyid, noffspring2 = 2, noffspring3 = c(1, 1))
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{familyid}] What will be the family\_id (for example: 100)
+
+\item[\code{noffspring2}] Number of offspring in generation 2
+
+\item[\code{noffspring3}] Number of offspring in generation 3 (vector of length noffspring2)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+family structure object
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+generateUniformGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+ped_line = newFamily3generations(12, 3, c(3,3,2) )
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{newFamilyWithOffspring}{Simulates genotypes for 1 family with n offspring}{newFamilyWithOffspring}
+%
+\begin{Description}\relax
+Simulates genotypes for 1 family with n offspring
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+newFamilyWithOffspring(family_id, noffspring = 2)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{family\_id}] What will be the family\_id (for example: 100)
+
+\item[\code{noffspring}] Number of offsprings that this family will have
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+family structure object
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+ped_line = newFamilyWithOffspring(10,3)
+
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{newNuclearFamily}{Simulates genotypes for 1 family with 1 offspring}{newNuclearFamily}
+%
+\begin{Description}\relax
+Simulates genotypes for 1 family with 1 offspring
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+newNuclearFamily(family_id)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{family\_id}] What will be the family\_id (for example: 100)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+family structure object
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+   min_maf = 0.12 ,max_maf = NA)
+
+genetic_map_of_region = system.file("examples","chr4-geneticmap.txt",
+   package = "sim1000G")
+readGeneticMapFromFile(genetic_map_of_region)
+
+startSimulation(vcf, totalNumberOfIndividuals = 1200)
+fam1 = newNuclearFamily(1)
+fam2 = newNuclearFamily(2)
+
+# See also the documentation on our github page
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{pkg.opts}{Holds general package options}{pkg.opts}
+\keyword{datasets}{pkg.opts}
+%
+\begin{Description}\relax
+Holds general package options
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+pkg.opts
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+An object of class \code{environment} of length 1.
+\end{Format}
+\inputencoding{utf8}
+\HeaderA{plotRegionalGeneticMap}{Generates a plot of the genetic map for a specified region.}{plotRegionalGeneticMap}
+%
+\begin{Description}\relax
+The plot shows the centimorgan vs base-pair positions.
+The position of markers that have been read is also depicted as vertical lines
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+plotRegionalGeneticMap(bp)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{bp}] Vector of base-pair positions to generate a plot for
+library("sim1000G")
+
+examples\_dir = system.file("examples", package = "sim1000G")
+vcf\_file = sprintf("
+vcf = readVCF( vcf\_file, maxNumberOfVariants = 100,
+min\_maf = 0.12)
+
+\# For realistic data use the function readGeneticMap
+generateUniformGeneticMap()
+
+pdf(file=tempfile())
+plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))
+dev.off()
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{printMatrix}{Utility function that prints a matrix. Useful for IBD12 matrices.}{printMatrix}
+%
+\begin{Description}\relax
+Utility function that prints a matrix. Useful for IBD12 matrices.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+printMatrix(m)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{m}] Matrix to be printed
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+printMatrix (  matrix(runif(16), nrow=4) )
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{readGeneticMap}{Reads a genetic map downloaded from the function downloadGeneticMap or reads a genetic map from a specified file. If the argument filename is used then the genetic map is read from the corresponding file. Otherwise, if a chromosome is specified, the genetic map is downloaded for human chromosome using grch37 coordinates.}{readGeneticMap}
+%
+\begin{Description}\relax
+The map must contains a complete chromosome or enough markers to cover the area that
+will be simulated.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+readGeneticMap(chromosome, filename = NA, dir = NA)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{chromosome}] Chromosome number to download a genetic map for , or
+
+\item[\code{filename}] A filename of an existing genetic map to read from (default NA).
+
+\item[\code{dir}] Directory the map file will be saved (only if chromosome is specified).
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+
+
+
+readGeneticMap(chromosome = 22)
+
+
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{readGeneticMapFromFile}{Reads a genetic map to be used for simulations. The genetic map should be of a single chromosome and covering the extent of the region to be simulated. Whole chromosome genetic maps can also be used.}{readGeneticMapFromFile}
+%
+\begin{Description}\relax
+The file must be contain the following columns in the same order: chromosome, basepaire, rate(not used), centimorgan
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+readGeneticMapFromFile(filelocation)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{filelocation}] Filename containing the genetic map
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+## Not run: 
+
+fname = downloadGeneticMap(10)
+
+cat("genetic map downloaded at :", fname, "\n")
+readGeneticMapFromFile(fname)
+
+
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{readVCF}{Read a vcf file, with options to filter out low or high frequency markers.}{readVCF}
+%
+\begin{Description}\relax
+Read a vcf file, with options to filter out low or high frequency markers.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+readVCF(filename = "data.vcf", thin = NA, maxNumberOfVariants = 400,
+  min_maf = 0.02, max_maf = NA, region_start = NA, region_end = NA)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{filename}] Input VCF file
+
+\item[\code{thin}] How much to thin markers
+
+\item[\code{maxNumberOfVariants}] Maximum number of variants to keep from region
+
+\item[\code{min\_maf}] Minimum allele frequency of markers to keep. If NA skip min\_maf filtering.
+
+\item[\code{max\_maf}] Maximum allele frequency of markers to keep. If NA skip max\_maf filtering.
+
+\item[\code{region\_start}] Extract a region from a vcf files with this starting basepair position
+
+\item[\code{region\_end}] Extract a region from a vcf files with this ending basepair position
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+VCF object to be used by startSimulation function.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir,
+  "region-chr4-93-TMEM156.vcf.gz")
+
+vcf = readVCF( vcf_file, maxNumberOfVariants = 500 ,
+               min_maf = 0.02 ,max_maf = NA)
+
+str(as.list(vcf))
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{resetSimulation}{Removes all individuals that have been simulated and resets the simulator.}{resetSimulation}
+%
+\begin{Description}\relax
+Removes all individuals that have been simulated and resets the simulator.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+resetSimulation()
+\end{verbatim}
+\end{Usage}
+%
+\begin{Value}
+nothing
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+resetSimulation()
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{retrieveGenotypes}{Retrieve a matrix of simulated genotypes for a specific set of individual IDs}{retrieveGenotypes}
+%
+\begin{Description}\relax
+Retrieve a matrix of simulated genotypes for a specific set of individual IDs
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+retrieveGenotypes(ids)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{ids}] Vector of ids of individuals to retrieve.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library("sim1000G")
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+# For realistic data use the function downloadGeneticMap
+generateUniformGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+ped1 = newNuclearFamily(1)
+
+retrieveGenotypes(ped1$gtindex)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{saveSimulation}{Save the data for a simulation for later use. When simulating multiple populations it allows saving and restoring of simulation data for each population.}{saveSimulation}
+%
+\begin{Description}\relax
+Save the data for a simulation for later use. When simulating multiple populations it
+allows saving and restoring of simulation data for each population.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+saveSimulation(id)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{id}] Name the simulation will be saved as.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+
+
+examples_dir = system.file("examples", package = "sim1000G")
+
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
+
+
+# For realistic data use the functions downloadGeneticMap
+generateUniformGeneticMap()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+ped1 = newNuclearFamily(1)
+
+saveSimulation("sim1")
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{setRecombinationModel}{Set recombination model to either poisson (no interference) or chi-square.}{setRecombinationModel}
+%
+\begin{Description}\relax
+Set recombination model to either poisson (no interference) or chi-square.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+setRecombinationModel(model)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{model}] Either poisson or chisq
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+
+generateUniformGeneticMap()
+
+do_plots = 0
+
+setRecombinationModel("chisq")
+if(do_plots == 1)
+ hist(generateRecombinationDistances(100000),n=200)
+
+setRecombinationModel("poisson")
+if(do_plots == 1)
+ hist(generateRecombinationDistances(100000),n=200)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{SIM}{Holds data necessary for a simulation.}{SIM}
+\keyword{datasets}{SIM}
+%
+\begin{Description}\relax
+Holds data necessary for a simulation.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+SIM
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+An object of class \code{environment} of length 7.
+\end{Format}
+\inputencoding{utf8}
+\HeaderA{startSimulation}{Starts and initializes the data structures required for a simulation. A VCF file should be read beforehand with the function readVCF.}{startSimulation}
+%
+\begin{Description}\relax
+Starts and initializes the data structures required for a simulation. A VCF file
+should be read beforehand with the function readVCF.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+startSimulation(vcf, totalNumberOfIndividuals = 2000, subset = NA,
+  randomdata = 0, typeOfGeneticMap = "download")
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{vcf}] Input vcf file of a region (can be .gz). Must contain phased data.
+
+\item[\code{totalNumberOfIndividuals}] Maximum Number of individuals to allocate memory for. Set it above the number of individuals you want to simulate.
+
+\item[\code{subset}] A subset of individual IDs to use for simulation
+
+\item[\code{randomdata}] If 1, disregards the genotypes in the vcf file and generates independent markers that are not in LD.
+
+\item[\code{typeOfGeneticMap}] Specify whether to download a genetic map for this chromosome
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+library("sim1000G")
+library(gplots)
+
+examples_dir = system.file("examples", package = "sim1000G")
+vcf_file = file.path(examples_dir, "region.vcf.gz")
+
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100)
+
+
+genetic_map_of_region = system.file(
+   "examples",
+   "chr4-geneticmap.txt",
+   package = "sim1000G"
+)
+
+readGeneticMapFromFile(genetic_map_of_region)
+
+pdf(file=tempfile())
+plotRegionalGeneticMap(vcf$vcf[,2]+1)
+dev.off()
+
+startSimulation(vcf, totalNumberOfIndividuals = 200)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{subsetVCF}{Generate a market subset of a vcf file}{subsetVCF}
+%
+\begin{Description}\relax
+Generate a market subset of a vcf file
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+subsetVCF(vcf, var_index = NA, var_id = NA, individual_id = NA)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{vcf}] VCF data as created by function readVCF
+
+\item[\code{var\_index}] index of number to subset. Should be in the range 1..length(vcf\$varid)
+
+\item[\code{var\_id}] id  of markers to subset. Should be a selection from vcf\$varid. NA if no filtering on id to be performed.
+
+\item[\code{individual\_id}] IDs of individuals to subset. Should be a selection from vcf\$individual\_id
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+VCF object to be used by startSimulation function.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+examples_dir = system.file("examples", package = "sim1000G")
+
+vcf_file = file.path(examples_dir, "region-chr4-93-TMEM156.vcf.gz")
+
+vcf = readVCF( vcf_file, maxNumberOfVariants = 500 ,
+               min_maf = 0.02 ,max_maf = NA)
+
+vcf2 = subsetVCF(vcf, var_index = 1:50)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{writePED}{Writes a plink compatible PED/MAP file from the simulated genotypes}{writePED}
+%
+\begin{Description}\relax
+Writes a plink compatible PED/MAP file from the simulated genotypes
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+writePED(vcf, fam, filename = "out")
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{vcf}] vcf object used in simulation
+
+\item[\code{fam}] Individuals / families to be written
+
+\item[\code{filename}] Basename of output files (.ped/.map will be added automatically)
+\end{ldescription}
+\end{Arguments}
+\printindex{}
+\end{document}

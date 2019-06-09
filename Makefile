@@ -1,25 +1,36 @@
 
+PKGNAME := $(shell sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION)
+PKGVERS := $(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
+PKGSRC  := $(shell basename `pwd`)
 
 default:
 	Rscript  -e 'library(devtools); document(); build(); '
 
-doc:
+build:
+	cd ..;\
+	R CMD build $(PKGSRC)
+
+document:
 	Rscript -e 'tools::buildVignettes(dir = ".") ' 
+	#Rscript -e 'devtools::build()' 
 	Rscript  -e 'library(devtools); document(); '
+
+checkcitation:
+	R CMD INSTALL .
+	Rscript -e 'citation("sim1000G")'
+
 
 vin:
 	Rscript -e 'tools::buildVignettes(package="sim1000G",quiet=F)'
 
 
-crancheck:
-	cd .. && R CMD check --as-cran $(PKGFILE)
-
-
 tgz:
 	cd .. && tar cvzf sim1000G.tar.gz `cat sim1000G/include-filelist.txt | sed -e "s/^/sim1000G\//"`
 
-check:
-	R CMD check .
+
+check: build
+	cd ..;\
+	R CMD check $(PKGNAME)_$(PKGVERS).tar.gz --as-cran
 
 
 pdf:

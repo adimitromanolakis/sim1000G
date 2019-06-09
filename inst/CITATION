@@ -1,13 +1,31 @@
 citHeader("Please cite sim1000G in publications as:")
 
 citEntry(
-  entry="Manual",
-  title = "sim1000G: Easy to use multi marker genetic marker simulator in R for unrelated individuals or complex families - Manual ",
-  author = personList( as.person("Apostolos Dimitromanolakis"),as.person("Laurent Briollais") ),
-  year = "2017",
-  organization = "Mt Sinai Hospital Toronto",
-  address = "Toronto, ON",
-  textVersion = "Dimitromanolakis et al (2017). sim1000G: Easy to use multi marker genetic marker simulator in R for unrelated individuals or complex families - Manual",
-  url = "https://adimitromanolakis.github.io/sim1000G/inst/doc/SimulatingFamilyData.html"
+
+entry="Article",
+
+author=personList( as.person("Dimitromanolakis, Apostolos"),
+  as.person("Xu, Jingxiong"),
+  as.person("Krol, Agnieszka"),
+  as.person("Briollais, Laurent") ),
+
+title="sim1000G: a user-friendly genetic variant simulator in R for unrelated individuals and family-based designs",
+journal="BMC Bioinformatics",
+year="2019",
+month="Jan",
+day="15",
+volume="20",
+number="1",
+pages="26",
+abstract="Simulation of genetic variants data is frequently required for the evaluation of statistical methods in the fields of human and animal genetics. Although a number of high-quality genetic simulators have been developed, many of them require advanced knowledge in population genetics or in computation to be used effectively. In addition, generating simulated data in the context of family-based studies demands sophisticated methods and advanced computer programming.",
+issn="1471-2105",
+doi="10.1186/s12859-019-2611-1",
+url="https://doi.org/10.1186/s12859-019-2611-1",
+textVersion="sim1000G: a user-friendly genetic variant simulator in R for unrelated individuals and family-based designs,
+Apostolos Dimitromanolakis, Jingxiong Xu, Agnieszka Krol and Laurent Briollais,
+BMC Bioinformatics 201920:26,
+15 January 2019"
+
+
 )
 

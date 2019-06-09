@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Genotype Simulations for Rare or Common Variants Using
+Haplotypes from 1000 Genomes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+<h1> Genotype Simulations for Rare or Common Variants Using
+Haplotypes from 1000 Genomes
+<img class="toplogo" src="../../../doc/html/logo.jpg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;sim1000G&rsquo; version 1.38</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="sim1000G-package.html">sim1000G-package</a></td>
+<td>Simulations of rare/common variants using haplotype data from 1000 genomes</td></tr>
+<tr><td style="width: 25%;"><a href="computePairIBD1.html">computePairIBD1</a></td>
+<td>Computes pairwise IBD1 for a specific pair of individuals. See function computePairIBD12 for description.</td></tr>
+<tr><td style="width: 25%;"><a href="computePairIBD12.html">computePairIBD12</a></td>
+<td>Computes pairwise IBD1/2 for a specific pair of individuals</td></tr>
+<tr><td style="width: 25%;"><a href="computePairIBD2.html">computePairIBD2</a></td>
+<td>Computes pairwise IBD2 for a specific pair of individuals</td></tr>
+<tr><td style="width: 25%;"><a href="createVCF.html">createVCF</a></td>
+<td>Creates a regional vcf file using bcftools to extract a region from 1000 genomes vcf files</td></tr>
+<tr><td style="width: 25%;"><a href="crossoverCDFvector.html">crossoverCDFvector</a></td>
+<td>Contains recombination model information.</td></tr>
+<tr><td style="width: 25%;"><a href="downloadGeneticMap.html">downloadGeneticMap</a></td>
+<td>Downloads a genetic map for a particular chromosome under GRCh37 coordinates for use with sim1000G.</td></tr>
+<tr><td style="width: 25%;"><a href="generateChromosomeRecombinationPositions.html">generateChromosomeRecombinationPositions</a></td>
+<td>Generates a recombination vector arising from one meiotic event. The origin of segments is coded as (0 - haplotype1 , 1 - haplotype2 )</td></tr>
+<tr><td style="width: 25%;"><a href="generateFakeWholeGenomeGeneticMap.html">generateFakeWholeGenomeGeneticMap</a></td>
+<td>Generates a fake genetic map that spans the whole genome.</td></tr>
+<tr><td style="width: 25%;"><a href="generateRecombinationDistances.html">generateRecombinationDistances</a></td>
+<td>Generate inter-recombination distances using a chi-square model. Note this are the distances between two succesive recombination events and not the absolute positions of the events. To generate the locations of the recombination events see the example below.</td></tr>
+<tr><td style="width: 25%;"><a href="generateRecombinationDistances_noInterference.html">generateRecombinationDistances_noInterference</a></td>
+<td>Generate recombination distances using a no-interference model.</td></tr>
+<tr><td style="width: 25%;"><a href="generateSingleRecombinationVector.html">generateSingleRecombinationVector</a></td>
+<td>Genetates a recombination vector arising from one meiotic event. The origin of segments is coded as (0 - haplotype1 , 1 - haplotype2 )</td></tr>
+<tr><td style="width: 25%;"><a href="generateUniformGeneticMap.html">generateUniformGeneticMap</a></td>
+<td>Generates a uniform genetic map.</td></tr>
+<tr><td style="width: 25%;"><a href="generateUnrelatedIndividuals.html">generateUnrelatedIndividuals</a></td>
+<td>Generates variant data for n unrelated individuals</td></tr>
+<tr><td style="width: 25%;"><a href="geneticMap.html">geneticMap</a></td>
+<td>Holds the genetic map information that is used for simulations.</td></tr>
+<tr><td style="width: 25%;"><a href="getCMfromBP.html">getCMfromBP</a></td>
+<td>Converts centimorgan position to base-pair. Return a list of centimorgan positions that correspond to the bp vector (in basepairs).</td></tr>
+<tr><td style="width: 25%;"><a href="loadSimulation.html">loadSimulation</a></td>
+<td>Load some previously saved simulation data by function saveSimulation</td></tr>
+<tr><td style="width: 25%;"><a href="newFamily3generations.html">newFamily3generations</a></td>
+<td>Generates genotype data for a family of 3 generations</td></tr>
+<tr><td style="width: 25%;"><a href="newFamilyWithOffspring.html">newFamilyWithOffspring</a></td>
+<td>Simulates genotypes for 1 family with n offspring</td></tr>
+<tr><td style="width: 25%;"><a href="newNuclearFamily.html">newNuclearFamily</a></td>
+<td>Simulates genotypes for 1 family with 1 offspring</td></tr>
+<tr><td style="width: 25%;"><a href="pkg.opts.html">pkg.opts</a></td>
+<td>Holds general package options</td></tr>
+<tr><td style="width: 25%;"><a href="plotRegionalGeneticMap.html">plotRegionalGeneticMap</a></td>
+<td>Generates a plot of the genetic map for a specified region.</td></tr>
+<tr><td style="width: 25%;"><a href="printMatrix.html">printMatrix</a></td>
+<td>Utility function that prints a matrix. Useful for IBD12 matrices.</td></tr>
+<tr><td style="width: 25%;"><a href="readGeneticMap.html">readGeneticMap</a></td>
+<td>Reads a genetic map downloaded from the function downloadGeneticMap or reads a genetic map from a specified file. If the argument filename is used then the genetic map is read from the corresponding file. Otherwise, if a chromosome is specified, the genetic map is downloaded for human chromosome using grch37 coordinates.</td></tr>
+<tr><td style="width: 25%;"><a href="readGeneticMapFromFile.html">readGeneticMapFromFile</a></td>
+<td>Reads a genetic map to be used for simulations. The genetic map should be of a single chromosome and covering the extent of the region to be simulated. Whole chromosome genetic maps can also be used.</td></tr>
+<tr><td style="width: 25%;"><a href="readVCF.html">readVCF</a></td>
+<td>Read a vcf file, with options to filter out low or high frequency markers.</td></tr>
+<tr><td style="width: 25%;"><a href="resetSimulation.html">resetSimulation</a></td>
+<td>Removes all individuals that have been simulated and resets the simulator.</td></tr>
+<tr><td style="width: 25%;"><a href="retrieveGenotypes.html">retrieveGenotypes</a></td>
+<td>Retrieve a matrix of simulated genotypes for a specific set of individual IDs</td></tr>
+<tr><td style="width: 25%;"><a href="saveSimulation.html">saveSimulation</a></td>
+<td>Save the data for a simulation for later use. When simulating multiple populations it allows saving and restoring of simulation data for each population.</td></tr>
+<tr><td style="width: 25%;"><a href="setRecombinationModel.html">setRecombinationModel</a></td>
+<td>Set recombination model to either poisson (no interference) or chi-square.</td></tr>
+<tr><td style="width: 25%;"><a href="SIM.html">SIM</a></td>
+<td>Holds data necessary for a simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="sim1000G-package.html">sim1000G</a></td>
+<td>Simulations of rare/common variants using haplotype data from 1000 genomes</td></tr>
+<tr><td style="width: 25%;"><a href="startSimulation.html">startSimulation</a></td>
+<td>Starts and initializes the data structures required for a simulation. A VCF file should be read beforehand with the function readVCF.</td></tr>
+<tr><td style="width: 25%;"><a href="subsetVCF.html">subsetVCF</a></td>
+<td>Generate a market subset of a vcf file</td></tr>
+<tr><td style="width: 25%;"><a href="writePED.html">writePED</a></td>
+<td>Writes a plink compatible PED/MAP file from the simulated genotypes</td></tr>
+</table>
+</body></html>

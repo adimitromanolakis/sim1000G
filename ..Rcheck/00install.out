@@ -1,0 +1,15 @@
+* installing *source* package ‘sim1000G’ ...
+** R
+** data
+** inst
+** preparing package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+   ‘ExtractingRegionsForSimulation.Rmd’ using ‘UTF-8’ 
+Warning in res[i] = withCallingHandlers(if (tangle) process_tangle(group) else process_group(group),  :
+  number of items to replace is not a multiple of replacement length
+   ‘SimulatingFamilyData.Rmd’ using ‘UTF-8’ 
+** testing if installed package can be loaded
+* DONE (sim1000G)

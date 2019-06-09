@@ -26,13 +26,26 @@ haplosim2 = function (n, hap, which.snp = NULL, seed = NULL, force.polym = TRUE,
                                                         indexset], tol = 1e-06, empirical = FALSE)
     if (n == 1)
         A <- array(A, dim = c(1, nloci))
-    for (i in 1:n) {
-        for (j in 1:nloci) {
-            if (A[i, j] <= quants[j])
-                y[i, j] <- 0
-            else y[i, j] <- 1
-        }
-    }
+
+
+
+    # for (i in 1:n) {
+    #     for (j in 1:nloci) {
+    #         if (A[i, j] <= quants[j])
+    #             y[i, j] <- 0
+    #         else y[i, j] <- 1
+    #     }
+    # }
+    #
+    ##OPTIMIZED
+
+    # cat("Using updated hapsim function\n");
+
+    for (j in 1:nloci)  y[,j] = (A[,j] > quants[j] )+0
+
+
+
+
     y.freqs <- allelefreqs(y)
 
     y.freqs <- y.freqs$freqs

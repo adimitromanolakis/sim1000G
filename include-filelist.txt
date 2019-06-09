@@ -4,4 +4,4 @@ R/
 man/
 tests/
 inst/
-vignettes/
+vignettes/*.Rmd

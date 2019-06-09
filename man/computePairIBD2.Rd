@@ -23,9 +23,10 @@ library("sim1000G")
 
 examples_dir = system.file("examples", package = "sim1000G")
 vcf_file = file.path(examples_dir, "region.vcf.gz")
-vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100 ,
+               min_maf = 0.12 ,max_maf = NA)
 
-# For realistic data use the functions downloadGeneticMap / readGeneticMap
+# For realistic data use the function downloadGeneticMap
 generateUniformGeneticMap()
 
 startSimulation(vcf, totalNumberOfIndividuals = 200)
