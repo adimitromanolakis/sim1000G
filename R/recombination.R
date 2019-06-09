@@ -128,7 +128,7 @@ geneticMap <- new.env()
 #' Downloads a genetic map for a particular chromosome under GRCh37 coordinates for use with sim1000G.
 #'
 #' @param chromosome Chromosome number to download recombination distances from.
-#' @param dir Directory to save the genetic map to (default: extdata)
+#' @param dir Directory to save the genetic map to (default: temporary directory)
 #'
 #'
 #' @examples
@@ -151,9 +151,10 @@ downloadGeneticMap = function(chromosome, dir = NA) {
 
 
         if(is.na(dir)) {
-            dest_dir = system.file("datasets", package = "sim1000G")
+            #dest_dir = system.file("datasets", package = "sim1000G")
+            #if(dest_dir == "") dest_dir = tempdir()
+            dest_dir = tempdir()
 
-            if(dest_dir == "") dest_dir = tempdir()
             if(!dir.exists(dest_dir))  dest_dir = tempdir()
         } else {
             dest_dir = dir

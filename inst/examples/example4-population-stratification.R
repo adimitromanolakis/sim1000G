@@ -1,6 +1,6 @@
-# Example 1 , read a region from 1000 genomes, simulate 300 individuals, compute and display LD patterns
+# Example 4 , read a region from 1000 genomes, simulate individuals from two populations
 
-library("sim1000G")
+library(sim1000G)
 library(gplots)
 
 simulatePopulation = function(num_individuals = 300)
@@ -15,11 +15,11 @@ simulatePopulation = function(num_individuals = 300)
 ## vcf1: variants from european population
 ## vcf2: variants from african populations
 
-vcf1 = readVCF("~/fs/tmp/CEU-TSI-GBR/CEU-TSI-GBR-region-chr4-205-MAML3.vcf.gz",
+vcf1 = readVCF("/tmp/fs/tmp/CEU-TSI-GBR/CEU-TSI-GBR-region-chr4-205-MAML3.vcf.gz",
                maxNumberOfVariants = 5000,  min_maf =  1e-6, max_maf = 0.02)
 
 
-vcf2 = readVCF("~/fs/tmp/AFR/ASW-LWK-YRI-region-chr4-205-MAML3.vcf.gz",
+vcf2 = readVCF("/tmp/fs/tmp/AFR/ASW-LWK-YRI-region-chr4-205-MAML3.vcf.gz",
                maxNumberOfVariants = 5000,  min_maf = 1e-6, max_maf = 0.05)
 
 

@@ -12,11 +12,15 @@ library("sim1000G")
 
 examples_dir = system.file("examples", package = "sim1000G")
 vcf_file = sprintf("%s/region.vcf.gz", examples_dir)
-vcf = readVCF( vcf_file, maxNumberOfVariants = 100 , min_maf = 0.12 ,max_maf = NA)
+vcf = readVCF( vcf_file, maxNumberOfVariants = 100,
+  min_maf = 0.12)
 
-# For realistic data use the functions downloadGeneticMap / readGeneticMap
+# For realistic data use the function readGeneticMap
 generateUniformGeneticMap()
-plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))}
+
+pdf(file=tempfile())
+plotRegionalGeneticMap(seq(1e6,100e6,by=1e6/2))
+dev.off()}
 }
 \description{
 The plot shows the centimorgan vs base-pair positions.

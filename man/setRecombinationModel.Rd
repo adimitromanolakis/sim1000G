@@ -2,20 +2,29 @@
 % Please edit documentation in R/simulation.R
 \name{setRecombinationModel}
 \alias{setRecombinationModel}
-\title{Set options of the recombination model.}
+\title{Set recombination model to either poisson (no interference) or chi-square.}
 \usage{
 setRecombinationModel(model)
 }
 \arguments{
-\item{model}{Either poisson or chisq}
+\item{model}{Either "poisson" or "chisq"}
 }
 \description{
-Set options of the recombination model.
+Set recombination model to either poisson (no interference) or chi-square.
 }
 \examples{
 
-setRecombinationModel("poisson")
+
+generateUniformGeneticMap()
+
+do_plots = 0
 
 setRecombinationModel("chisq")
+if(do_plots == 1)
+ hist(generateRecombinationDistances(100000),n=200)
+
+setRecombinationModel("poisson")
+if(do_plots == 1)
+ hist(generateRecombinationDistances(100000),n=200)
 
 }

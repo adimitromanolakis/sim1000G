@@ -124,10 +124,21 @@ examineMAFandLD = function() {
 
 
 
-vcf_file = "~/fs/tmp/CEU-TSI-GBR/CEU-TSI-GBR-region-chr4-93-TMEM156.vcf.gz"
+x = list.files(path = "/tmp/fs/tmp/CEU-TSI-GBR/", full.names = T)
+
+
+
+vcf_file = "/tmp/fs/tmp/CEU-TSI-GBR/CEU-TSI-GBR-region-chr4-202-NOCT.vcf.gz"
+vcf_file = sample(x,1)
+
+vcf_file = "/tmp/fs/tmp/extract-2mbp/eur-2MBp/region-chr1-121-r121.0MBp.vcf.gz"
+
 #vcf_file = "~/fs/tmp/CEU-TSI-GBR-region-chr4-34-ABLIM2.vcf.gz"
 
-initializeSimulation(vcf_file,maxNumberOfVariants = 1000, min_maf=1e-10, max_maf=0.02)
+initializeSimulation(vcf_file,maxNumberOfVariants = 500, min_maf=0.15, max_maf=1)
+
+
+
 genotypes = simulatePopulation(100)
 
 
@@ -135,7 +146,7 @@ v1 = subsetVCF(vcf,var_id = vcf$varid[1:10])
 str(as.list(v1))
 
 
-
+examineMAFandLD()
 
 
 

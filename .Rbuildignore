@@ -12,4 +12,5 @@ genetic_map_GRCh37_chr4.txt.gz
 ./vignettes/rsconnect
 inst/examples/family/
 extra/
+vignettes/test/
 

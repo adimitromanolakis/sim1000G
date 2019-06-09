@@ -18,8 +18,10 @@ The file must be contain the following columns in the same order: chromosome, ba
 
 \dontrun{
 
+fname = downloadGeneticMap(10)
 
-readGeneticMapFromFile("genetic_map_GRCh37_chr4.txt.gz")
+cat("genetic map downloaded at :", fname, "\\n")
+readGeneticMapFromFile(fname)
 
 }
 }

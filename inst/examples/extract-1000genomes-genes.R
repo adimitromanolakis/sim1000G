@@ -8,31 +8,55 @@
 ##           files: ALL.chr1.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
 ##   bcftools version 1.3.1
 
-chrom = 4
+chrom = commandArgs(T)[1]
+pops = commandArgs(T)[2]
+output_directory = commandArgs(T)[3]
 
-gene_expand_bp = 250e3
+print(commandArgs(T))
+
+if(length(commandArgs(T))<3) stop("Usage: script.R chrom pops output_directory")
+
+pops = strsplit(pops,",")[[1]]
+print(pops)
 
 
-# Read pedigree files from 1000 genomes
 
-ped = read.table("20130606_g1k.ped",h=T,as=T,sep="\t")
+ped_file = "~/1000genomes/20130606_g1k.ped"
 
+which_populations = c("ASW","LWK","YRI")
+which_populations = c("CEU","TSI","GBR")
+which_populations = pops
+
+gene_expand_bp = 5e3
+
+
+num_genes_to_extract = 400
+
+run_commands_within_r = 1
+
+
+sample_subset_file = tempfile()
+##
+
+
+cat("Chromosome ", chrom, "\n")
+
+if(is.na(chrom)) { stop(" no chromosome provided in command line ")}
+
+
+
+ped = read.table(ped_file,h=T,as=T,sep="\t")
 pop = ped$Population
 names(pop) = ped$Individual.ID
 
-which_populations = c("ASW","LWK","YRI")
 
-    id1 = ped$Individual.ID [ ped$Population %in% which_populations]
-    cat(id1,file="sample_subset_afr.txt",sep="\n")
+id1 = ped$Individual.ID [ ped$Population %in% which_populations]
+cat(id1,file=   sample_subset_file ,  sep="\n")
 
+cat("individuals selected: ", length(id1),"\n")
 
-which_populations = c("CEU","TSI","GBR")
-
-    id1 = ped$Individual.ID [ ped$Population %in% which_populations]
-    cat(id1,file="sample_subset_eur.txt",sep="\n")
-
-
-
+cat("individuals selected: ",id1,"\n")
+cat("file=",sample_subset_file,"\n")
 
 
 
@@ -45,11 +69,12 @@ which_populations = c("CEU","TSI","GBR")
 
 genes_table = read.table("~/fs/genes.txt",h=F,as=T)
 
-
-
-s = genes_table$V11 == "protein_coding" & genes_table$V1 == "4"
+s = genes_table$V11 == "protein_coding" & genes_table$V1 == chrom
 
 genes_table = genes_table[s,]
+
+
+
 
 
 
@@ -64,8 +89,6 @@ table(genes_table$V1)
 extract_commands = function(num, chrom, start,end,name, output_directory=".") {
 
 
-
-
     region = sprintf("%s:%d-%d",chrom,start,end)
 
     cat(region, name, "size=", (end-start)/1000, "kbp\n");
@@ -78,36 +101,18 @@ extract_commands = function(num, chrom, start,end,name, output_directory=".") {
 
     cmd = sprintf(cmd, region, fn, outfile)
 
-
-
+    cat("RUN: ",cmd,"\n")
 
     cmd = sprintf("echo %s\n%s\n",name,cmd)
 
-    system(cmd)
 
 
+    if(run_commands_within_r) system(cmd)
 
     cmd
-
-
 }
 
 
-
-
-
-i = 10
-
-
-start = genes_table$V2[i]
-end = genes_table$V3[i]
-name = genes_table$V7[i]
-
-
-
-
-
-fn = "ALL.chr%s.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz"
 
 
 
@@ -122,6 +127,7 @@ f = function(i) {
 
 
 
+    print(genes_table[i,])
     extract_commands(i, chrom, start_bp, end_bp, name, output_directory)
 
 }
@@ -142,28 +148,46 @@ f_2mbp = function(i) {
 }
 
 
-# f = f_2mbp
+
+#f = f_2mbp
 
 
 
 
-cmd = " bcftools view -r %s -S sample_subset_afr.txt --force-samples %s | bcftools filter -e 'AF==0' | bgzip > %s"
+i = 10
+
+
+start = genes_table$V2[i]
+end = genes_table$V3[i]
+name = genes_table$V7[i]
+
+
+
+
+
+fn = "~/1000genomes/ALL.chr%s.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz"
+
+
+
+
+
+cmd = " bcftools view -r %s -S FILE1 --force-samples %s | bcftools filter -e 'AF==0' | ~/truffle/compress --cpu2 10 > %s"
+cmd = sub("FILE1",sample_subset_file, cmd)
+print(cmd)
+#exit()
+
 outfile_template = "region-chr%s-%d-%s.vcf.gz"
-output_directory ="/tmp/afr"
-
-cmds = sapply(1:500,f)
 
 
-cmd = " bcftools view -r %s -S sample_subset_eur.txt --force-samples %s | bcftools filter -e 'AF==0' | bgzip > %s"
-outfile_template = "region-chr%s-%d-%s.vcf.gz"
-output_directory ="/tmp/eur"
 
-cmds2 = sapply(1:500,f)
+if(num_genes_to_extract == -1) num_genes_to_extract = nrow(genes_table)
+
+cmds2 = sapply(1:num_genes_to_extract,f)
 
 
 
 
-cat(cmds,cmds2,file="extract-genes.sh",sep="\n")
+cat(cmds2,file="extract-genes.sh",sep="\n")
 
 
 

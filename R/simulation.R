@@ -29,7 +29,7 @@ pkg.opts$recombination = 1
 #' Set recombination model to either poisson (no interference) or chi-square.
 #'
 #'
-#' @param model Either poisson or chisq
+#' @param model Either "poisson" or "chisq"
 #'
 #' @examples
 #'
@@ -263,7 +263,9 @@ SIM$generateNewHaplotypes = function(n = -1) {
 
        # cat("Generate new haplotype pool..\n");
 
-        SIM$refreshPool()
+        t <- system.time( SIM$refreshPool() )
+        print(t)
+
 
 
     }

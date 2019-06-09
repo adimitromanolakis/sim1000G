@@ -26,6 +26,6 @@ distances = generateRecombinationDistances(20)
 
 positions_of_recombination = cumsum(distances)
 
-
+if(0) hist(generateRecombinationDistances(20000),n=100)
 
 }

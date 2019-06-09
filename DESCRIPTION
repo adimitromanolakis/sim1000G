@@ -1,8 +1,8 @@
 Package: sim1000G
 Type: Package
 Title: Genotype Simulations for Rare or Common Variants Using Haplotypes from 1000 Genomes
-Version: 1.38
-Date: 2018-02-13
+Version: 1.40
+Date: 2019-05-30
 Author: Apostolos Dimitromanolakis <apostolis@live.ca>, 
     Jingxiong Xu <jingxiong.xu@mail.utoronto.ca>,
     Agnieszka Krol <krol@lunenfeld.ca>,
@@ -18,12 +18,12 @@ Depends:
     stringr,
     readr
 NeedsCompilation: no
-VignetteBuilder: knitr, prettydoc
-RoxygenNote: 6.0.1
+VignetteBuilder: knitr, prettydoc, rmarkdown
+RoxygenNote: 6.1.0
 Suggests: knitr,
     prettydoc,
     testthat,
-    rmarkdown,
-    gplots
+    gplots,
+    rmarkdown
 Encoding: UTF-8
 Repository: CRAN
