@@ -20,10 +20,6 @@ checkcitation:
 	Rscript -e 'citation("sim1000G")'
 
 
-vin:
-	Rscript -e 'tools::buildVignettes(package="sim1000G",quiet=F)'
-
-
 tgz:
 	cd .. && tar cvzf sim1000G.tar.gz `cat sim1000G/include-filelist.txt | sed -e "s/^/sim1000G\//"`
 
